@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Government Schemes - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h2><i class="bi bi-file-earmark-text"></i> {{ t.schemes }}</h2>
+            <p class="lead text-muted">Important government schemes for farmers</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            {% for scheme in schemes %}
+            <div class="scheme-card">
+                <h4>{{ loop.index }}. {{ scheme.name }}</h4>
+                <p class="text-muted mb-3">{{ scheme.description }}</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong><i class="bi bi-check-circle text-success"></i> Eligibility:</strong><br>
+                            {{ scheme.eligibility }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong><i class="bi bi-link-45deg text-primary"></i> Official Website:</strong><br>
+                            <a href="{{ scheme.website }}" target="_blank" rel="noopener">
+                                {{ scheme.website }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                
+                <a href="{{ scheme.website }}" target="_blank" class="btn btn-primary btn-sm" rel="noopener">
+                    <i class="bi bi-arrow-right-circle"></i> Learn More & Apply
+                </a>
+            </div>
+            {% endfor %}
+            
+            <!-- Additional Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-info-circle"></i> How to Apply?</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Visit the official website</strong> of the scheme you're interested in</li>
+                        <li><strong>Read the eligibility criteria</strong> carefully</li>
+                        <li><strong>Gather required documents</strong> (Aadhaar, land records, bank details, etc.)</li>
+                        <li><strong>Register/Login</strong> on the portal</li>
+                        <li><strong>Fill the application form</strong> with accurate details</li>
+                        <li><strong>Upload documents</strong> as required</li>
+                        <li><strong>Submit application</strong> and note down the reference number</li>
+                        <li><strong>Track your application</strong> status on the portal</li>
+                    </ol>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> 
+                        Visit your nearest Common Service Center (CSC) or agricultural office if you need help with the application process.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-telephone"></i> Need Help?</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>PM-KISAN Helpline</h6>
+                            <p><i class="bi bi-phone"></i> 011-24300606</p>
+                            <p><i class="bi bi-envelope"></i> pmkisan-ict@gov.in</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>PMFBY Helpline</h6>
+                            <p><i class="bi bi-phone"></i> 011-23382012</p>
+                            <p><i class="bi bi-envelope"></i> help.agri-insurance@gov.in</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h6>Andhra Pradesh Agriculture Department</h6>
+                        <p><i class="bi bi-phone"></i> 0866-2410110</p>
+                        <p><i class="bi bi-globe"></i> <a href="https://www.apagrisnet.gov.in/" target="_blank" rel="noopener">www.apagrisnet.gov.in</a></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Important Documents -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-file-earmark-check"></i> Commonly Required Documents</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-person-badge" style="font-size: 2rem; color: var(--primary-green);"></i>
+                                <p class="mt-2 mb-0 small"><strong>Aadhaar Card</strong></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-bank" style="font-size: 2rem; color: var(--primary-green);"></i>
+                                <p class="mt-2 mb-0 small"><strong>Bank Details</strong></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-file-earmark-text" style="font-size: 2rem; color: var(--primary-green);"></i>
+                                <p class="mt-2 mb-0 small"><strong>Land Records</strong></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-phone" style="font-size: 2rem; color: var(--primary-green);"></i>
+                                <p class="mt-2 mb-0 small"><strong>Mobile Number</strong></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-image" style="font-size: 2rem; color: var(--primary-green);"></i>
+                                <p class="mt-2 mb-0 small"><strong>Passport Photo</strong></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-journal-text" style="font-size: 2rem; color: var(--primary-green);"></i>
+                                <p class="mt-2 mb-0 small"><strong>Farmer ID</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits Summary -->
+            <div class="card mt-4 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-gift"></i> Benefits at a Glance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-currency-rupee text-success me-3" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h6>Direct Income Support</h6>
+                                    <p class="small mb-0">Get ₹6,000 per year directly in your bank account through PM-KISAN</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-shield-check text-success me-3" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h6>Crop Insurance</h6>
+                                    <p class="small mb-0">Protect your crops from natural calamities with PMFBY</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-clipboard-data text-success me-3" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h6>Soil Health Card</h6>
+                                    <p class="small mb-0">Get recommendations to improve soil quality and crop yield</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-cart4 text-success me-3" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h6>Online Market Access</h6>
+                                    <p class="small mb-0">Sell your produce online through eNAM platform</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

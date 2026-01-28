@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="bi bi-shop"></i> {{ t.marketplace }}</h2>
+            <p class="text-muted">Fresh produce directly from local farmers</p>
+        </div>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" 
+                       class="form-control" 
+                       id="crop-search" 
+                       placeholder="Search crops by name or location...">
+            </div>
+        </div>
+    </div>
+    
+    {% if crops %}
+        <!-- Crops Grid -->
+        <div class="row g-4">
+            {% for crop in crops %}
+            <div class="col-md-4">
+                <div class="card crop-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-basket"></i> {{ crop.name }}
+                        </h5>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-geo-alt"></i> {{ crop.location }}
+                        </p>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Farmer:</span>
+                                <strong>{{ crop.farmer_name }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Phone:</span>
+                                <span><i class="bi bi-phone"></i> {{ crop.farmer_phone }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Available:</span>
+                                <strong>{{ crop.quantity }} kg</strong>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Price Information -->
+                        <div class="price-info">
+                            <div>
+                                <h3 class="mb-0">₹{{ "%.2f"|format(crop.price) }}</h3>
+                                <small class="text-muted">per kg</small>
+                            </div>
+                            <div class="text-end">
+                                {% if crop.msp_price %}
+                                    <div class="small text-muted">MSP: ₹{{ "%.2f"|format(crop.msp_price) }}</div>
+                                    {% if crop.comparison %}
+                                        <span class="badge bg-{{ crop.comparison_class }}">
+                                            {{ crop.comparison }}
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">No MSP</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- MSP Comparison Message -->
+                        {% if crop.comparison %}
+                            <div class="mt-2">
+                                {% if crop.comparison == 'Below MSP' %}
+                                    <div class="alert alert-success py-2 mb-0 small">
+                                        <i class="bi bi-check-circle"></i> Great deal! Below government MSP
+                                    </div>
+                                {% elif crop.comparison == 'Equal to MSP' %}
+                                    <div class="alert alert-info py-2 mb-0 small">
+                                        <i class="bi bi-info-circle"></i> Fair price at MSP rate
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-warning py-2 mb-0 small">
+                                        <i class="bi bi-exclamation-triangle"></i> Above MSP rate
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-grid mt-3">
+                            <a href="{{ url_for('place_order', crop_id=crop.id) }}" class="btn btn-primary">
+                                <i class="bi bi-cart-plus"></i> Place Order
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+            <h4 class="mt-4">No Crops Available</h4>
+            <p class="text-muted">Check back later for fresh produce from local farmers</p>
+        </div>
+    {% endif %}
+    
+    <!-- Info Section -->
+    <div class="row mt-5 g-3">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-shield-check" style="font-size: 2rem; color: var(--primary-green);"></i>
+                    <h6 class="mt-2">Direct from Farmers</h6>
+                    <p class="small text-muted mb-0">No middlemen, no markup</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: var(--primary-green);"></i>
+                    <h6 class="mt-2">MSP Transparency</h6>
+                    <p class="small text-muted mb-0">Compare prices with government MSP</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-truck" style="font-size: 2rem; color: var(--primary-green);"></i>
+                    <h6 class="mt-2">Track Delivery</h6>
+                    <p class="small text-muted mb-0">Real-time order status updates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

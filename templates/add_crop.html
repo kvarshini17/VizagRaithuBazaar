@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Add Crop - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="bi bi-plus-circle"></i> {{ t.add_crop }}</h3>
+                    <p class="mb-0">List your crop for consumers to purchase</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('add_crop') }}">
+                        <div class="mb-3">
+                            <label for="crop_name" class="form-label">
+                                <i class="bi bi-basket"></i> Crop Name *
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="crop_name" 
+                                   name="crop_name" 
+                                   list="crop-suggestions"
+                                   placeholder="e.g., Rice, Wheat, Tomato"
+                                   required>
+                            <datalist id="crop-suggestions">
+                                {% for crop in msp_crops %}
+                                    <option value="{{ crop }}">
+                                {% endfor %}
+                            </datalist>
+                            <div class="form-text">Select from suggestions or enter custom crop name</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="price_per_kg" class="form-label">
+                                <i class="bi bi-currency-rupee"></i> Price per kg *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="price_per_kg" 
+                                       name="price_per_kg" 
+                                       step="0.01"
+                                       min="0.01"
+                                       placeholder="Enter price per kilogram"
+                                       required>
+                            </div>
+                            <div class="form-text">Set a fair price for your crop (compare with MSP if available)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">
+                                <i class="bi bi-box-seam"></i> Quantity (kg) *
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="quantity" 
+                                   name="quantity" 
+                                   step="0.1"
+                                   min="0.1"
+                                   placeholder="Enter quantity in kilograms"
+                                   required>
+                            <div class="form-text">How much quantity do you have available?</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="location" class="form-label">
+                                <i class="bi bi-geo-alt"></i> Location *
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="location" 
+                                   name="location" 
+                                   placeholder="e.g., Madhurawada, Vizag"
+                                   required>
+                            <div class="form-text">Enter your village/area name in Vizag region</div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> <strong>Note:</strong> 
+                            Your crop will be visible to all consumers in the marketplace. Make sure all information is accurate.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> List Crop
+                            </button>
+                            <a href="{{ url_for('farmer_dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- MSP Reference Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-graph-up"></i> MSP Reference (2024)</h5>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">Here are some Minimum Support Prices for reference:</p>
+                    <div class="row g-2">
+                        {% for crop in msp_crops[:6] %}
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                <span>{{ crop }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p class="small text-muted mt-3 mb-0">
+                        <i class="bi bi-lightbulb"></i> Pricing your crop near or below MSP helps consumers save money and increases sales.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
