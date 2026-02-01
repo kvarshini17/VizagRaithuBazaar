@@ -1,8 +1,218 @@
 {% extends "base.html" %}
-{% block title %}{{ t.welcome }} - VizagRaithuBazaar{% endblock %}
-{% block extra_css %}
-<style>.hero-section{background:linear-gradient(135deg,rgba(45,80,22,0.95),rgba(74,124,44,0.9));color:white;padding:100px 0;text-align:center}.hero-section h1{font-size:3.5rem;font-weight:bold;margin-bottom:20px}.hero-section .tagline{font-size:1.5rem;margin-bottom:40px}.hero-buttons .btn{margin:10px;padding:15px 40px;font-size:1.1rem;border-radius:50px}.btn-primary-custom{background:#ffa500;border:none;color:white}.btn-primary-custom:hover{background:#ff8c00}.stats-section{background:white;padding:60px 0}.stat-card{text-align:center;padding:30px;border-radius:15px;background:linear-gradient(135deg,#f5f5f5,#e8e8e8);margin:10px}.stat-card .number{font-size:3rem;font-weight:bold;color:#2d5016}.features-section{padding:80px 0;background:linear-gradient(135deg,#f8f9fa,#e9ecef)}.feature-card{text-align:center;padding:40px 20px;background:white;border-radius:15px;margin:15px 0}.feature-icon{font-size:4rem;color:#4a7c2c;margin-bottom:20px}</style>
-{% endblock %}
+
+{% block title %}Home - VizagRaithuBazaar{% endblock %}
+
 {% block content %}
-<section class="hero-section"><div class="container"><h1>{% if lang=='te'%}🌾 విజాగ్ రైతు బజార్ 🌾{% else %}🌾 VizagRaithuBazaar 🌾{% endif %}</h1><p class="tagline">{% if lang=='te'%}రైతు నుండి వినియోగదారుకు నేరుగా{% else %}Direct From Farmers To Consumers{% endif %}</p><div class="hero-buttons">{% if not session.user_id %}<a href="{{url_for('farmer_login')}}" class="btn btn-light btn-lg"><i class="bi bi-person-badge"></i> {% if lang=='te'%}రైతు లాగిన్{% else %}Farmer Login{% endif %}</a><a href="{{url_for('consumer_login')}}" class="btn btn-primary-custom btn-lg"><i class="bi bi-person"></i> {% if lang=='te'%}వినియోగదారు లాగిన్{% else %}Consumer Login{% endif %}</a><a href="{{url_for('marketplace')}}" class="btn btn-outline-light btn-lg"><i class="bi bi-shop"></i> {% if lang=='te'%}మార్కెట్‌ చూడండి{% else %}Browse Marketplace{% endif %}</a>{% else %}{% if session.role=='farmer'%}<a href="{{url_for('farmer_dashboard')}}" class="btn btn-light btn-lg">{{t.dashboard}}</a>{% else %}<a href="{{url_for('marketplace')}}" class="btn btn-light btn-lg">{{t.marketplace}}</a>{% endif %}{% endif %}</div></div></section><section class="stats-section"><div class="container"><div class="row"><div class="col-md-4"><div class="stat-card"><div class="number">500+</div><div class="label">{% if lang=='te'%}రైతులు{% else %}Farmers{% endif %}</div></div></div><div class="col-md-4"><div class="stat-card"><div class="number">50+</div><div class="label">{% if lang=='te'%}పంట రకాలు{% else %}Crop Varieties{% endif %}</div></div></div><div class="col-md-4"><div class="stat-card"><div class="number">1000+</div><div class="label">{% if lang=='te'%}వినియోగదారులు{% else %}Customers{% endif %}</div></div></div></div></div></section><section class="features-section"><div class="container"><h2 class="text-center mb-5">{% if lang=='te'%}ఎందుకు విజాగ్ రైతు బజార్?{% else %}Why VizagRaithuBazaar?{% endif %}</h2><div class="row"><div class="col-md-4"><div class="feature-card"><div class="feature-icon">💰</div><h3>{% if lang=='te'%}న్యాయమైన ధరలు{% else %}Fair Pricing{% endif %}</h3><p>{% if lang=='te'%}MSP ఆధారిత ధరలు{% else %}MSP-based prices{% endif %}</p></div></div><div class="col-md-4"><div class="feature-card"><div class="feature-icon">🤝</div><h3>{% if lang=='te'%}నేరుగా కనెక్షన్{% else %}Direct Connection{% endif %}</h3><p>{% if lang=='te'%}మధ్యవర్తులు లేకుండా{% else %}No middlemen{% endif %}</p></div></div><div class="col-md-4"><div class="feature-card"><div class="feature-icon">📱</div><h3>{% if lang=='te'%}సులభం{% else %}Easy to Use{% endif %}</h3><p>{% if lang=='te'%}సరళమైన ఇంటర్ఫేస్{% else %}Simple interface{% endif %}</p></div></div></div></div></section>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1>{{ t.welcome }}</h1>
+        <p>{{ t.tagline }}</p>
+        <p class="lead">Connecting farmers directly with consumers for fair prices and fresh produce</p>
+        
+        {% if not session.user_id %}
+        <div class="mt-4">
+            <a href="{{ url_for('farmer_login') }}" class="btn btn-light btn-lg me-3">
+                <i class="bi bi-person-badge"></i> I'm a Farmer
+            </a>
+            <a href="{{ url_for('consumer_login') }}" class="btn btn-warning btn-lg">
+                <i class="bi bi-cart"></i> I'm a Consumer
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container my-5">
+    <h2 class="text-center mb-5">Why Choose VizagRaithuBazaar?</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="bi bi-currency-rupee" style="font-size: 3rem; color: var(--primary-green);"></i>
+                    </div>
+                    <h4>Fair Pricing</h4>
+                    <p>Transparent pricing with MSP comparison. Farmers get better prices, consumers save money.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="bi bi-arrow-left-right" style="font-size: 3rem; color: var(--primary-green);"></i>
+                    </div>
+                    <h4>Direct Connection</h4>
+                    <p>No middlemen. Farmers connect directly with consumers for transparent trade.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="bi bi-phone" style="font-size: 3rem; color: var(--primary-green);"></i>
+                    </div>
+                    <h4>Easy to Use</h4>
+                    <p>Simple OTP-based login. Available in Telugu and English for all users.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="container my-5">
+    <h2 class="text-center mb-5">How It Works</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i class="bi bi-person-badge"></i> For Farmers</h4>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">Login with your mobile number using OTP</li>
+                        <li class="list-group-item">List your crops with price and quantity</li>
+                        <li class="list-group-item">Receive orders from consumers</li>
+                        <li class="list-group-item">Update delivery status</li>
+                        <li class="list-group-item">Get better prices without middlemen</li>
+                    </ol>
+                    <div class="mt-3">
+                        <a href="{{ url_for('farmer_login') }}" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Get Started as Farmer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i class="bi bi-cart"></i> For Consumers</h4>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">Login with your mobile number using OTP</li>
+                        <li class="list-group-item">Browse fresh crops from local farmers</li>
+                        <li class="list-group-item">Compare prices with MSP</li>
+                        <li class="list-group-item">Place orders directly</li>
+                        <li class="list-group-item">Track your order delivery status</li>
+                    </ol>
+                    <div class="mt-3">
+                        <a href="{{ url_for('consumer_login') }}" class="btn btn-warning">
+                            <i class="bi bi-box-arrow-in-right"></i> Get Started as Consumer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Impact</h2>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="stat-card">
+                    <h3><i class="bi bi-people"></i></h3>
+                    <p>Empowering Farmers</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="stat-card">
+                    <h3><i class="bi bi-graph-up"></i></h3>
+                    <p>Better Income</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="stat-card">
+                    <h3><i class="bi bi-currency-rupee"></i></h3>
+                    <p>Fair Prices</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="stat-card">
+                    <h3><i class="bi bi-check-circle"></i></h3>
+                    <p>Transparent Trade</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Government Schemes CTA -->
+<section class="container my-5 text-center">
+    <div class="card">
+        <div class="card-body p-5">
+            <h3><i class="bi bi-file-earmark-text"></i> Government Schemes for Farmers</h3>
+            <p class="lead">Learn about PM-KISAN, PMFBY, Soil Health Card, and eNAM</p>
+            <a href="{{ url_for('schemes') }}" class="btn btn-primary btn-lg">
+                Explore Schemes <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Highlight -->
+<section class="container my-5">
+    <h2 class="text-center mb-5">Platform Features</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="bi bi-shield-check text-success"></i> OTP Authentication</h5>
+                    <p>Secure login using mobile OTP. No password hassles.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="bi bi-graph-up-arrow text-success"></i> MSP Comparison</h5>
+                    <p>See how crop prices compare with government MSP rates.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="bi bi-truck text-success"></i> Order Tracking</h5>
+                    <p>Track your order from placement to delivery.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="bi bi-translate text-success"></i> Multi-Language</h5>
+                    <p>Available in English and Telugu for easy access.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="bi bi-geo-alt text-success"></i> Local Focus</h5>
+                    <p>Supporting farmers and consumers in Vizag region.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="bi bi-clock-history text-success"></i> Order History</h5>
+                    <p>View complete history of all your transactions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
