@@ -1,4 +1,3 @@
-
 # 🌾 VizagRaithuBazaar
 
 **Direct Farmer-to-Consumer Agricultural Platform**
@@ -410,6 +409,3 @@ The OTP will be displayed on the screen (in production, it will be sent via SMS)
 ---
 
 **🌾 Empowering Farmers, Benefiting Consumers 🌾**
-=======
-# VizagRaithuBazaar
-
