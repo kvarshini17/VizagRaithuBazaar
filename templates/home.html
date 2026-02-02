@@ -13,10 +13,13 @@
         {% if not session.user_id %}
         <div class="mt-4">
             <a href="{{ url_for('farmer_login') }}" class="btn btn-light btn-lg me-3">
-                <i class="bi bi-person-badge"></i> I'm a Farmer
+                <i class="bi bi-person-badge"></i> {{ t.im_farmer if t.im_farmer else "I'm a Farmer" }}
             </a>
-            <a href="{{ url_for('consumer_login') }}" class="btn btn-warning btn-lg">
-                <i class="bi bi-cart"></i> I'm a Consumer
+            <a href="{{ url_for('consumer_login') }}" class="btn btn-warning btn-lg me-3">
+                <i class="bi bi-cart"></i> {{ t.im_consumer if t.im_consumer else "I'm a Consumer" }}
+            </a>
+            <a href="{{ url_for('browse_choice') }}" class="btn btn-warning btn-lg">
+                <i class="bi bi-shop"></i> {{ t.browse_marketplace if t.browse_marketplace else "Browse Marketplace" }}
             </a>
         </div>
         {% endif %}
@@ -142,6 +145,76 @@
                 <div class="stat-card">
                     <h3><i class="bi bi-check-circle"></i></h3>
                     <p>Transparent Trade</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MSP Information Section -->
+<section class="container my-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h2 class="mb-4">{{ t.what_is_msp if t.what_is_msp else "What is MSP?" }}</h2>
+            
+            <p class="lead">
+                {{ t.msp_explanation if t.msp_explanation else "Minimum Support Price (MSP) is the rate at which the government purchases crops from farmers, regardless of market prices." }}
+            </p>
+            
+            <ul class="list-unstyled mt-4">
+                <li class="mb-3">
+                    <i class="bi bi-check-circle text-success"></i>
+                    {{ t.farmers_know_fair if t.farmers_know_fair else "Farmers know if their price is fair" }}
+                </li>
+                <li class="mb-3">
+                    <i class="bi bi-check-circle text-success"></i>
+                    {{ t.consumers_verify if t.consumers_verify else "Consumers can verify they're not overpaying" }}
+                </li>
+                <li class="mb-3">
+                    <i class="bi bi-check-circle text-success"></i>
+                    {{ t.complete_transparency if t.complete_transparency else "Complete transparency in every transaction" }}
+                </li>
+            </ul>
+            
+            <a href="{{ url_for('schemes') }}" class="btn btn-primary btn-lg mt-3">
+                {{ t.view_msp_rates if t.view_msp_rates else "View MSP Rates" }}
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ t.msp_example if t.msp_example else "MSP Example (2024-25)" }}</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{% if lang == 'te' %}పంట{% else %}Crop{% endif %}</th>
+                                <th>MSP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{% if lang == 'te' %}బియ్యం (Rice){% else %}Rice{% endif %}</td>
+                                <td>₹2,040/quintal</td>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == 'te' %}గోధుమ (Wheat){% else %}Wheat{% endif %}</td>
+                                <td>₹2,125/quintal</td>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == 'te' %}పత్తి (Cotton){% else %}Cotton{% endif %}</td>
+                                <td>₹6,620/quintal</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <small class="text-muted">
+                        {% if lang == 'te' %}
+                            *1 quintal = 100 kg
+                        {% else %}
+                            *1 quintal = 100 kg
+                        {% endif %}
+                    </small>
                 </div>
             </div>
         </div>

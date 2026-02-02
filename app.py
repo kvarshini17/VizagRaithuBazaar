@@ -72,31 +72,64 @@ def init_db():
     for crop, price in msp_data:
         c.execute('INSERT OR IGNORE INTO msp_prices VALUES (?, ?)', (crop, price))
     
-    # Add default crops if no crops exist
-    c.execute('SELECT COUNT(*) FROM crops')
+    # Add realistic Vizag farmers if no farmers exist
+    c.execute('SELECT COUNT(*) FROM users WHERE role = "farmer"')
     if c.fetchone()[0] == 0:
-        # Check if we have a default farmer, if not create one
-        c.execute('SELECT id FROM users WHERE role = "farmer" LIMIT 1')
-        farmer = c.fetchone()
-        if not farmer:
-            c.execute('INSERT INTO users (phone_number, role, name) VALUES (?, ?, ?)',
-                      ('9999999999', 'farmer', 'Demo Farmer'))
-            farmer_id = c.lastrowid
-        else:
-            farmer_id = farmer[0]
-        
-        # Add default crops
-        default_crops = [
-            ('Rice', 40, 500, 'Madhurawada, Vizag'),
-            ('Wheat', 38, 300, 'Gajuwaka, Vizag'),
-            ('Tomato', 25, 200, 'Rushikonda, Vizag'),
-            ('Onion', 20, 150, 'Pendurthi, Vizag'),
-            ('Potato', 22, 250, 'Anakapalle, Vizag')
+        realistic_farmers = [
+            {
+                'phone': '9876543210',
+                'name': 'రవి కుమార్ (Ravi Kumar)',
+                'crops': [
+                    ('Rice', 42, 600, 'Pedagantyada, Vizag'),
+                    ('Wheat', 40, 350, 'Pedagantyada, Vizag')
+                ]
+            },
+            {
+                'phone': '9876543211',
+                'name': 'లక్ష్మీ దేవి (Lakshmi Devi)',
+                'crops': [
+                    ('Tomato', 28, 250, 'Gajuwaka, Vizag'),
+                    ('Onion', 22, 180, 'Gajuwaka, Vizag'),
+                    ('Potato', 24, 200, 'Gajuwaka, Vizag')
+                ]
+            },
+            {
+                'phone': '9876543212',
+                'name': 'వేంకట రావు (Venkata Rao)',
+                'crops': [
+                    ('Rice', 45, 500, 'Rushikonda, Vizag'),
+                    ('Maize', 35, 400, 'Rushikonda, Vizag')
+                ]
+            },
+            {
+                'phone': '9876543213',
+                'name': 'సీత రాములు (Sita Ramulu)',
+                'crops': [
+                    ('Groundnut', 90, 300, 'Pendurthi, Vizag'),
+                    ('Cotton', 120, 150, 'Pendurthi, Vizag')
+                ]
+            },
+            {
+                'phone': '9876543214',
+                'name': 'కృష్ణ మూర్తి (Krishna Murthy)',
+                'crops': [
+                    ('Sugarcane', 50, 800, 'Anakapalle, Vizag'),
+                    ('Banana', 35, 200, 'Anakapalle, Vizag')
+                ]
+            }
         ]
         
-        for crop_name, price, qty, location in default_crops:
-            c.execute('INSERT INTO crops (farmer_id, crop_name, price_per_kg, quantity, location) VALUES (?, ?, ?, ?, ?)',
-                      (farmer_id, crop_name, price, qty, location))
+        for farmer_data in realistic_farmers:
+            # Insert farmer
+            c.execute('INSERT INTO users (phone_number, role, name) VALUES (?, ?, ?)',
+                     (farmer_data['phone'], 'farmer', farmer_data['name']))
+            farmer_id = c.lastrowid
+            
+            # Insert crops
+            for crop_name, price, qty, location in farmer_data['crops']:
+                c.execute('''INSERT INTO crops (farmer_id, crop_name, price_per_kg, quantity, location)
+                            VALUES (?, ?, ?, ?, ?)''',
+                         (farmer_id, crop_name, price, qty, location))
     
     conn.commit()
     conn.close()
@@ -123,6 +156,20 @@ def login_required(role=None):
 @app.route('/')
 def home():
     return render_template('home.html')
+
+# Browse Marketplace Choice
+@app.route('/browse-choice')
+def browse_choice():
+    """Show login choice before browsing marketplace"""
+    if session.get('user_id'):
+        # Already logged in, go straight to marketplace
+        return redirect(url_for('marketplace'))
+    
+    lang = session.get('language', 'en')
+    from flask import current_app
+    with current_app.app_context():
+        context_data = inject_translations()
+        return render_template('browse_choice.html', **context_data)
 
 # Farmer Login - Phone Number
 @app.route('/farmer/login', methods=['GET', 'POST'])
@@ -369,6 +416,8 @@ def farmer_dashboard():
 @app.route('/farmer/add-crop', methods=['GET', 'POST'])
 @login_required(role='farmer')
 def add_crop():
+    lang = session.get('language', 'en')
+    
     if request.method == 'POST':
         crop_name = request.form.get('crop_name')
         price_per_kg = request.form.get('price_per_kg')
@@ -385,25 +434,51 @@ def add_crop():
             
             conn = sqlite3.connect('vizag_bazaar.db')
             c = conn.cursor()
+            
+            # Get MSP for this crop and compare
+            c.execute('SELECT msp_price FROM msp_prices WHERE crop_name = ?', (crop_name,))
+            msp_row = c.fetchone()
+            
+            if msp_row:
+                msp_price_quintal = msp_row[0]
+                msp_price_kg = msp_price_quintal / 100  # Convert quintal to kg
+                
+                # Check price vs MSP
+                if price_per_kg < msp_price_kg * 0.95:  # 5% below MSP
+                    if lang == 'te':
+                        flash(f'⚠️ హెచ్చరిక: మీ ధర (₹{price_per_kg}/kg) MSP (₹{msp_price_kg:.2f}/kg) కంటే తక్కువగా ఉంది!', 'warning')
+                    else:
+                        flash(f'⚠️ Warning: Your price (₹{price_per_kg}/kg) is below MSP (₹{msp_price_kg:.2f}/kg)!', 'warning')
+                elif price_per_kg > msp_price_kg * 1.2:  # 20% above MSP
+                    if lang == 'te':
+                        flash(f'⚠️ గమనిక: మీ ధర (₹{price_per_kg}/kg) MSP (₹{msp_price_kg:.2f}/kg) కంటే ఎక్కువగా ఉంది', 'info')
+                    else:
+                        flash(f'⚠️ Notice: Your price (₹{price_per_kg}/kg) is above MSP (₹{msp_price_kg:.2f}/kg)', 'info')
+                else:
+                    if lang == 'te':
+                        flash(f'✓ మంచి ధర! MSP: ₹{msp_price_kg:.2f}/kg, మీ ధర: ₹{price_per_kg}/kg', 'success')
+                    else:
+                        flash(f'✓ Good pricing! MSP: ₹{msp_price_kg:.2f}/kg, Your price: ₹{price_per_kg}/kg', 'success')
+            
             c.execute('''INSERT INTO crops (farmer_id, crop_name, price_per_kg, quantity, location)
                          VALUES (?, ?, ?, ?, ?)''',
                       (session['user_id'], crop_name, price_per_kg, quantity, location))
             conn.commit()
             conn.close()
             
-            flash('Crop added successfully!', 'success')
+            flash('Crop added successfully!' if lang == 'en' else 'పంట విజయవంతంగా జోడించబడింది!', 'success')
             return redirect(url_for('farmer_dashboard'))
         except ValueError:
             flash('Invalid price or quantity', 'danger')
     
-    # Get MSP crop names for dropdown
+    # Get MSP data for display
     conn = sqlite3.connect('vizag_bazaar.db')
     c = conn.cursor()
-    c.execute('SELECT crop_name FROM msp_prices ORDER BY crop_name')
-    msp_crops = [row[0] for row in c.fetchall()]
+    c.execute('SELECT crop_name, msp_price FROM msp_prices ORDER BY crop_name')
+    msp_data = {row[0]: row[1] for row in c.fetchall()}
     conn.close()
     
-    return render_template('add_crop.html', msp_crops=msp_crops)
+    return render_template('add_crop.html', msp_data=msp_data)
 
 # Update Order Status
 @app.route('/farmer/update-order/<int:order_id>', methods=['POST'])
@@ -727,6 +802,25 @@ def inject_language():
             'eligibility': 'Eligibility',
             'learn_more': 'Learn More',
             
+            # Browse Marketplace
+            'browse_marketplace': 'Browse Marketplace',
+            'who_are_you': 'Who are you?',
+            'select_to_continue': 'Please select to continue',
+            'im_farmer': "I'm a Farmer",
+            'im_consumer': "I'm a Consumer",
+            
+            # MSP Info
+            'what_is_msp': 'What is MSP?',
+            'msp_explanation': 'Minimum Support Price (MSP) is the rate at which the government purchases crops from farmers, regardless of market prices.',
+            'farmers_know_fair': 'Farmers know if their price is fair',
+            'consumers_verify': 'Consumers can verify they\'re not overpaying',
+            'complete_transparency': 'Complete transparency in every transaction',
+            'view_msp_rates': 'View MSP Rates',
+            'msp_example': 'MSP Example (2024-25)',
+            'msp_warning_below': '⚠️ Warning: Your price is below MSP!',
+            'msp_warning_above': '⚠️ Notice: Your price is above MSP',
+            'msp_good_price': '✓ Good pricing!',
+            
             # Registration
             'register': 'Register',
             'create_account': 'Create Account',
@@ -840,6 +934,25 @@ def inject_language():
             'enam': 'eNAM',
             'eligibility': 'అర్హత',
             'learn_more': 'మరింత తెలుసుకోండి',
+            
+            # Browse Marketplace
+            'browse_marketplace': 'మార్కెట్ చూడండి',
+            'who_are_you': 'మీరు ఎవరు?',
+            'select_to_continue': 'కొనసాగించడానికి దయచేసి ఎంచుకోండి',
+            'im_farmer': 'నేను రైతును',
+            'im_consumer': 'నేను వినియోగదారుని',
+            
+            # MSP Info
+            'what_is_msp': 'MSP అంటే ఏమిటి?',
+            'msp_explanation': 'కనీస మద్దతు ధర (MSP) అనేది మార్కెట్ ధరలతో సంబంధం లేకుండా ప్రభుత్వం రైతుల నుండి పంటలను కొనుగోలు చేసే రేటు.',
+            'farmers_know_fair': 'రైతులు వారి ధర సరసమైనదో తెలుసుకుంటారు',
+            'consumers_verify': 'వినియోగదారులు అధిక ధర చెల్లించడం లేదని ధృవీకరించవచ్చు',
+            'complete_transparency': 'ప్రతి లావాదేవీలో పూర్తి పారదర్శకత',
+            'view_msp_rates': 'MSP రేట్లను చూడండి',
+            'msp_example': 'MSP ఉదాహరణ (2024-25)',
+            'msp_warning_below': '⚠️ హెచ్చరిక: మీ ధర MSP కంటే తక్కువగా ఉంది!',
+            'msp_warning_above': '⚠️ గమనిక: మీ ధర MSP కంటే ఎక్కువగా ఉంది',
+            'msp_good_price': '✓ మంచి ధర!',
             
             # Registration
             'register': 'నమోదు',
