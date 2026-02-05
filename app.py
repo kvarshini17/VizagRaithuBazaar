@@ -162,14 +162,9 @@ def home():
 def browse_choice():
     """Show login choice before browsing marketplace"""
     if session.get('user_id'):
-        # Already logged in, go straight to marketplace
         return redirect(url_for('marketplace'))
     
-    lang = session.get('language', 'en')
-    from flask import current_app
-    with current_app.app_context():
-        context_data = inject_translations()
-        return render_template('browse_choice.html', **context_data)
+    return render_template('browse_choice.html') 
 
 # Farmer Login - Phone Number
 @app.route('/farmer/login', methods=['GET', 'POST'])
@@ -478,7 +473,7 @@ def add_crop():
     msp_data = {row[0]: row[1] for row in c.fetchall()}
     conn.close()
     
-    return render_template('add_crop.html', msp_data=msp_data)
+    return render_template('add_crop.html', msp_data=msp_data, msp_crops=list(msp_data.keys()))
 
 # Update Order Status
 @app.route('/farmer/update-order/<int:order_id>', methods=['POST'])
