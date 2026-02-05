@@ -12,6 +12,12 @@
                     <p class="mb-0">List your crop for consumers to purchase</p>
                 </div>
                 <div class="card-body p-4">
+                    <!-- MSP Info Alert - NEW! -->
+                    <div id="msp-info-alert" class="alert alert-info" style="display: none; margin-bottom: 20px;">
+                        <strong><i class="bi bi-info-circle"></i> MSP Information:</strong>
+                        <div id="msp-info-text"></div>
+                    </div>
+
                     <form method="POST" action="{{ url_for('add_crop') }}">
                         <div class="mb-3">
                             <label for="crop_name" class="form-label">
@@ -48,6 +54,9 @@
                                        required>
                             </div>
                             <div class="form-text">Set a fair price for your crop (compare with MSP if available)</div>
+                            
+                            <!-- Price Warning - NEW! -->
+                            <div id="price-warning" class="mt-2"></div>
                         </div>
                         
                         <div class="mb-3">
@@ -119,4 +128,144 @@
         </div>
     </div>
 </div>
+
+<!-- Real-time MSP Warning System -->
+<script>
+// MSP data
+const mspData = {
+    'Rice': 2040,
+    'Wheat': 2125,
+    'Maize': 1870,
+    'Tomato': 3000,
+    'Onion': 2500,
+    'Potato': 2800,
+    'Cotton': 6620,
+    'Sugarcane': 31500,
+    'Groundnut': 5850,
+    'Soybean': 4600,
+    'Banana': 3500
+};
+
+console.log('🚀 MSP Warning System Loading...');
+
+// Wait for page to load
+window.addEventListener('load', function() {
+    const cropInput = document.getElementById('crop_name');
+    const priceInput = document.getElementById('price_per_kg');
+    const mspAlert = document.getElementById('msp-info-alert');
+    const mspText = document.getElementById('msp-info-text');
+    const warningDiv = document.getElementById('price-warning');
+    
+    if (!cropInput || !priceInput) {
+        console.error('❌ Could not find inputs!');
+        return;
+    }
+    
+    console.log('✅ Inputs found! MSP system active.');
+    
+    // Show MSP info when crop is selected
+    cropInput.addEventListener('input', function() {
+        const cropName = this.value.trim();
+        
+        if (mspData[cropName]) {
+            const mspQuintal = mspData[cropName];
+            const mspKg = (mspQuintal / 100).toFixed(2);
+            
+            mspText.innerHTML = `
+                <strong>${cropName}</strong> - 
+                MSP: <span class="badge bg-success">₹${mspQuintal}/quintal</span> 
+                = <span class="badge bg-primary">₹${mspKg}/kg</span>
+            `;
+            mspAlert.style.display = 'block';
+            console.log('✅ Showing MSP for:', cropName);
+            
+            // Trigger price check if price exists
+            if (priceInput.value) {
+                priceInput.dispatchEvent(new Event('input'));
+            }
+        } else {
+            mspAlert.style.display = 'none';
+        }
+    });
+    
+    // Real-time price comparison
+    priceInput.addEventListener('input', function() {
+        const price = parseFloat(this.value);
+        const cropName = cropInput.value.trim();
+        
+        if (!price || !mspData[cropName]) {
+            warningDiv.innerHTML = '';
+            return;
+        }
+        
+        const mspQuintal = mspData[cropName];
+        const mspKg = mspQuintal / 100;
+        
+        // Calculate difference
+        const deficit = (mspKg - price).toFixed(2);
+        const percentDiff = ((price - mspKg) / mspKg * 100).toFixed(1);
+        
+        if (price < mspKg * 0.95) {
+            // Below MSP - RED WARNING
+            warningDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading mb-2">
+                        <i class="bi bi-exclamation-triangle-fill"></i> 
+                        ⚠️ Warning: Price Below MSP!
+                    </h6>
+                    <div class="row small">
+                        <div class="col-6"><strong>MSP:</strong> ₹${mspKg.toFixed(2)}/kg</div>
+                        <div class="col-6"><strong>Your Price:</strong> ₹${price}/kg</div>
+                    </div>
+                    <hr class="my-2">
+                    <small>
+                        You're selling <strong>₹${deficit}/kg below MSP</strong>. 
+                        Recommended: ₹${mspKg.toFixed(2)}/kg or above
+                    </small>
+                </div>
+            `;
+            console.log('🔴 RED: Price below MSP by ₹' + deficit);
+        } else if (price > mspKg * 1.2) {
+            // Above MSP - YELLOW WARNING
+            warningDiv.innerHTML = `
+                <div class="alert alert-warning">
+                    <h6 class="alert-heading mb-2">
+                        <i class="bi bi-info-circle-fill"></i> 
+                        ⚠️ Notice: Price Above MSP
+                    </h6>
+                    <div class="row small">
+                        <div class="col-6"><strong>MSP:</strong> ₹${mspKg.toFixed(2)}/kg</div>
+                        <div class="col-6"><strong>Your Price:</strong> ₹${price}/kg</div>
+                    </div>
+                    <hr class="my-2">
+                    <small>
+                        Your price is <strong>${Math.abs(percentDiff)}% above MSP</strong>. 
+                        This may be harder to sell.
+                    </small>
+                </div>
+            `;
+            console.log('🟡 YELLOW: Price above MSP by ' + Math.abs(percentDiff) + '%');
+        } else {
+            // Good price - GREEN
+            warningDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <h6 class="alert-heading mb-2">
+                        <i class="bi bi-check-circle-fill"></i> 
+                        ✓ Good Pricing!
+                    </h6>
+                    <div class="row small">
+                        <div class="col-6"><strong>MSP:</strong> ₹${mspKg.toFixed(2)}/kg</div>
+                        <div class="col-6"><strong>Your Price:</strong> ₹${price}/kg</div>
+                    </div>
+                    <hr class="my-2">
+                    <small>Your price is within MSP range. Good choice!</small>
+                </div>
+            `;
+            console.log('🟢 GREEN: Good price within range');
+        }
+    });
+    
+    console.log('✅ MSP Warning System Active!');
+});
+</script>
 {% endblock %}
