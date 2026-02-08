@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Place Order - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="bi bi-cart-plus"></i> Place Order</h3>
+                    <p class="mb-0">Review details and confirm your order</p>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Crop Details -->
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <h4 class="mb-3">{{ crop[1] }}</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <i class="bi bi-currency-rupee text-success"></i> 
+                                        <strong>Price:</strong> ₹<span id="price-per-kg">{{ "%.2f"|format(crop[2]) }}</span> per kg
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="bi bi-box-seam text-info"></i> 
+                                        <strong>Available:</strong> {{ crop[3] }} kg
+                                    </p>
+                                    <p class="mb-0">
+                                        <i class="bi bi-geo-alt text-danger"></i> 
+                                        <strong>Location:</strong> {{ crop[4] }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <i class="bi bi-person text-primary"></i> 
+                                        <strong>Farmer:</strong> {{ crop[7] or 'Local Farmer' }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <i class="bi bi-phone text-success"></i> 
+                                        <strong>Contact:</strong> {{ crop[6] }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Form -->
+                    <form method="POST" action="{{ url_for('place_order', crop_id=crop[0]) }}">
+                        <div class="mb-4">
+                            <label for="quantity" class="form-label">
+                                <i class="bi bi-box-seam"></i> Quantity (kg) *
+                            </label>
+                            <input type="number" 
+                                   class="form-control form-control-lg" 
+                                   id="quantity" 
+                                   name="quantity" 
+                                   step="0.1"
+                                   min="0.1"
+                                   max="{{ crop[3] }}"
+                                   placeholder="Enter quantity in kg"
+                                   required>
+                            <div class="form-text">Maximum available: {{ crop[3] }} kg</div>
+                        </div>
+                        
+                        <!-- Total Price Display -->
+                        <div class="card mb-4">
+                            <div class="card-body bg-success text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Total Price:</h5>
+                                    <h3 class="mb-0">₹<span id="total-price">0.00</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> <strong>Demo Mode:</strong> 
+                            Payment integration is not included in this MVP. In production, you will be able to pay online.
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> <strong>Note:</strong> 
+                            After placing the order, the farmer will accept it and update delivery status. You can track your order in Order History.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Confirm & Place Order
+                            </button>
+                            <a href="{{ url_for('marketplace') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Marketplace
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Order Process Info -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-info-circle"></i> Order Process</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>Place your order by selecting quantity</li>
+                        <li>Farmer receives and accepts your order</li>
+                        <li>Farmer marks order as "Out for Delivery"</li>
+                        <li>You receive your fresh produce</li>
+                        <li>Farmer marks order as "Delivered"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Calculate total price dynamically
+document.getElementById('quantity').addEventListener('input', function() {
+    const quantity = parseFloat(this.value) || 0;
+    const pricePerKg = parseFloat(document.getElementById('price-per-kg').textContent);
+    const total = quantity * pricePerKg;
+    document.getElementById('total-price').textContent = total.toFixed(2);
+});
+</script>
+{% endblock %}

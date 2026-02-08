@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="bi bi-speedometer2"></i> Farmer Dashboard</h2>
+            <p class="text-muted">Welcome back! Manage your crops and orders</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('add_crop') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New Crop
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3>{{ crops|length }}</h3>
+                <p><i class="bi bi-basket"></i> Listed Crops</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3>{{ orders|length }}</h3>
+                <p><i class="bi bi-cart-check"></i> Total Orders</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3>{{ orders|selectattr('3')|selectattr('4', 'equalto', 'Delivered')|list|length }}</h3>
+                <p><i class="bi bi-check-circle"></i> Delivered Orders</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- My Crops Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="bi bi-basket"></i> {{ t.my_crops }}</h4>
+        </div>
+        <div class="card-body">
+            {% if crops %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Crop Name</th>
+                                <th>Price/kg</th>
+                                <th>Quantity</th>
+                                <th>Location</th>
+                                <th>Listed On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for crop in crops %}
+                            <tr>
+                                <td><strong>{{ crop[1] }}</strong></td>
+                                <td>₹{{ "%.2f"|format(crop[2]) }}</td>
+                                <td>{{ crop[3] }} kg</td>
+                                <td><i class="bi bi-geo-alt"></i> {{ crop[4] }}</td>
+                                <td>{{ crop[5][:10] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-3 text-muted">No crops listed yet</p>
+                    <a href="{{ url_for('add_crop') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Your First Crop
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- My Orders Section -->
+    <div class="card">
+        <div class="card-header">
+            <h4><i class="bi bi-cart-check"></i> {{ t.my_orders }}</h4>
+        </div>
+        <div class="card-body">
+            {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Crop</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                                <th>Consumer</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>#{{ order[0] }}</td>
+                                <td><strong>{{ order[1] }}</strong></td>
+                                <td>{{ order[2] }} kg</td>
+                                <td>₹{{ "%.2f"|format(order[3]) }}</td>
+                                <td><i class="bi bi-phone"></i> {{ order[6] }}</td>
+                                <td>
+                                    {% if order[4] == 'Order Placed' %}
+                                        <span class="status-badge status-placed">{{ order[4] }}</span>
+                                    {% elif order[4] == 'Accepted' %}
+                                        <span class="status-badge status-accepted">{{ order[4] }}</span>
+                                    {% elif order[4] == 'Out for Delivery' %}
+                                        <span class="status-badge status-delivery">{{ order[4] }}</span>
+                                    {% else %}
+                                        <span class="status-badge status-delivered">{{ order[4] }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ order[5][:10] }}</td>
+                                <td>
+                                    {% if order[4] != 'Delivered' %}
+                                    <form method="POST" action="{{ url_for('update_order_status', order_id=order[0]) }}" style="display: inline;">
+                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto; display: inline-block;">
+                                            <option value="">Update Status</option>
+                                            {% if order[4] == 'Order Placed' %}
+                                                <option value="Accepted">Accept Order</option>
+                                            {% elif order[4] == 'Accepted' %}
+                                                <option value="Out for Delivery">Out for Delivery</option>
+                                            {% elif order[4] == 'Out for Delivery' %}
+                                                <option value="Delivered">Mark Delivered</option>
+                                            {% endif %}
+                                        </select>
+                                    </form>
+                                    {% else %}
+                                        <span class="text-success"><i class="bi bi-check-circle"></i> Complete</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-cart-x" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-3 text-muted">No orders received yet</p>
+                    <p class="small">Orders will appear here when consumers place orders for your crops</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

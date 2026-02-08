@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="{{ lang if lang else 'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VizagRaithuBazaar{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-green: #2d7016;
+            --secondary-green: #4a9c2c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #212529;
+        }
+        
+        /* DARK BOLD NAVIGATION */
+        .navbar {
+            background: linear-gradient(135deg, #1a4d0a, var(--primary-green));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        /* BOLD WHITE NAVIGATION LINKS */
+        .nav-link {
+            color: white !important;
+            font-weight: 700 !important;
+            font-size: 1rem !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            padding: 8px 15px !important;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            transform: translateY(-2px);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            font-weight: 900;
+            transition: all 0.3s;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .profile-icon:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        
+        .profile-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            min-width: 300px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .profile-menu.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: white;
+            padding: 25px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .profile-body {
+            padding: 20px;
+        }
+        
+        .profile-info-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .profile-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .profile-info-item small {
+            color: #6c757d;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .profile-info-item strong {
+            color: #212529;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .role-farmer {
+            background: #28a745;
+            color: white;
+        }
+        
+        .role-consumer {
+            background: #007bff;
+            color: white;
+        }
+        
+        /* Language Dropdown - BOLD WHITE */
+        .dropdown-toggle {
+            font-weight: 700 !important;
+            color: white !important;
+        }
+        
+        .dropdown-menu {
+            background: white;
+            border: 2px solid rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .dropdown-item {
+            color: #212529;
+            font-weight: 600;
+            padding: 10px 20px;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--primary-green);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+                <i class="bi bi-flower1 me-2" style="font-size: 1.7rem;"></i>
+                <strong>VizagRaithuBazaar</strong>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- HOME - Always visible -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-fill"></i> {{ t.home if t else 'Home' }}
+                        </a>
+                    </li>
+                    
+                    {% if session.user_id %}
+                        <!-- FARMER-ONLY: Dashboard -->
+                        {% if session.role == 'farmer' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('farmer_dashboard') }}">
+                                <i class="bi bi-speedometer2"></i> {{ t.dashboard if t else 'Dashboard' }}
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <!-- CONSUMER-ONLY: Marketplace -->
+                        {% if session.role == 'consumer' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('marketplace') }}">
+                                <i class="bi bi-shop"></i> {{ t.marketplace if t else 'Marketplace' }}
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <!-- CONSUMER-ONLY: Order History -->
+                        {% if session.role == 'consumer' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('order_history') }}">
+                                <i class="bi bi-clock-history"></i> {{ t.order_history if t else 'Order History' }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <!-- MSP RATES - Always visible -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('msp_rates') }}">
+                            <i class="bi bi-graph-up-arrow"></i> {{ t.msp_rates if t else 'MSP Rates' }}
+                        </a>
+                    </li>
+                    
+                    <!-- GOVERNMENT SCHEMES - Always visible -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('schemes') }}">
+                            <i class="bi bi-file-earmark-text-fill"></i> {{ t.schemes if t else 'Gov. Schemes' }}
+                        </a>
+                    </li>
+                    
+                    {% if session.user_id %}
+                        <!-- Profile Dropdown - Logged in users only -->
+                        <li class="nav-item profile-dropdown ms-3">
+                            <div class="profile-icon" onclick="toggleProfile()">
+                                {{ session.user_name[0].upper() if session.user_name else 'U' }}
+                            </div>
+                            
+                            <div class="profile-menu" id="profileMenu">
+                                <div class="profile-header text-center">
+                                    <i class="bi bi-person-circle" style="font-size: 3.5rem;"></i>
+                                    <h5 class="mt-2 mb-1">{{ session.user_name or 'User' }}</h5>
+                                    {% if session.role == 'farmer' %}
+                                        <span class="role-badge role-farmer">
+                                            <i class="bi bi-person-badge"></i> Farmer
+                                        </span>
+                                    {% else %}
+                                        <span class="role-badge role-consumer">
+                                            <i class="bi bi-cart-fill"></i> Consumer
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="profile-body">
+                                    <div class="profile-info-item">
+                                        <small>PHONE NUMBER</small>
+                                        <div><strong>{{ session.phone_number }}</strong></div>
+                                    </div>
+                                    
+                                    <div class="profile-info-item">
+                                        <small>ACCOUNT TYPE</small>
+                                        <div><strong>{{ 'Farmer' if session.role == 'farmer' else 'Consumer' }}</strong></div>
+                                    </div>
+                                    
+                                    <div class="profile-info-item">
+                                        <small>MEMBER SINCE</small>
+                                        <div><strong>2026</strong></div>
+                                    </div>
+                                    
+                                    <div class="d-grid mt-3">
+                                        <a href="{{ url_for('logout') }}" class="btn btn-danger btn-lg">
+                                            <i class="bi bi-box-arrow-right"></i> Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% else %}
+                        <!-- Login buttons for non-logged in users -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('farmer_login') }}">
+                                <i class="bi bi-box-arrow-in-right"></i> {{ t.farmer_login if t else 'Farmer Login' }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('consumer_login') }}">
+                                <i class="bi bi-box-arrow-in-right"></i> {{ t.consumer_login if t else 'Consumer Login' }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <!-- Language Selector - Always visible -->
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-translate"></i> {{ 'English' if lang == 'en' else 'తెలుగు' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="setLang('en')">
+                                    English
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="setLang('te')">
+                                    తెలుగు (Telugu)
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0" style="font-weight: 600;">&copy; 2026 VizagRaithuBazaar. All rights reserved.</p>
+            <p class="mb-0">Built with ❤️ for farmers and consumers</p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts -->
+    <script>
+        // Profile Toggle
+        function toggleProfile() {
+            document.getElementById('profileMenu').classList.toggle('show');
+        }
+        
+        // Close on outside click
+        document.addEventListener('click', function(e) {
+            const profile = document.querySelector('.profile-dropdown');
+            const menu = document.getElementById('profileMenu');
+            if (profile && menu && !profile.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Language Change
+        function setLang(lang) {
+            window.location.href = '/set-lang?lang=' + lang;
+        }
+    </script>
+</body>
+</html>

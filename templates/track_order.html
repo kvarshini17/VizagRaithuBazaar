@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Track Order - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="bi bi-truck"></i> Track Order #{{ order[0] }}</h3>
+                    <p class="mb-0">Real-time order status updates</p>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Order Details -->
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3"><i class="bi bi-basket"></i> {{ order[1] }}</h5>
+                                    <p class="mb-2">
+                                        <strong>Quantity:</strong> {{ order[2] }} kg
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Total Price:</strong> ₹{{ "%.2f"|format(order[3]) }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Order Date:</strong> {{ order[5][:10] }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="mb-3"><i class="bi bi-person"></i> Farmer Details</h6>
+                                    <p class="mb-2">
+                                        <strong>Name:</strong> {{ order[7] or 'Local Farmer' }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Contact:</strong> {{ order[6] }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Location:</strong> {{ order[8] }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Status -->
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h4 class="mb-3">Current Status</h4>
+                            {% if order[4] == 'Order Placed' %}
+                                <div class="status-badge status-placed" style="font-size: 1.2rem; padding: 10px 20px;">
+                                    <i class="bi bi-clock"></i> {{ order[4] }}
+                                </div>
+                                <p class="mt-3 text-muted">Waiting for farmer to accept your order</p>
+                            {% elif order[4] == 'Accepted' %}
+                                <div class="status-badge status-accepted" style="font-size: 1.2rem; padding: 10px 20px;">
+                                    <i class="bi bi-check"></i> {{ order[4] }}
+                                </div>
+                                <p class="mt-3 text-muted">Farmer has accepted your order. Preparing for delivery...</p>
+                            {% elif order[4] == 'Out for Delivery' %}
+                                <div class="status-badge status-delivery" style="font-size: 1.2rem; padding: 10px 20px;">
+                                    <i class="bi bi-truck"></i> {{ order[4] }}
+                                </div>
+                                <p class="mt-3 text-muted">Your order is on the way!</p>
+                            {% else %}
+                                <div class="status-badge status-delivered" style="font-size: 1.2rem; padding: 10px 20px;">
+                                    <i class="bi bi-check-circle"></i> {{ order[4] }}
+                                </div>
+                                <p class="mt-3 text-success">Your order has been delivered successfully!</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Order Timeline -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-list-check"></i> Order Timeline</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="timeline">
+                                <!-- Order Placed -->
+                                <div class="timeline-item active">
+                                    <h6><i class="bi bi-cart-plus"></i> Order Placed</h6>
+                                    <p class="text-muted mb-0 small">Your order was successfully placed</p>
+                                </div>
+                                
+                                <!-- Accepted -->
+                                <div class="timeline-item {% if order[4] in ['Accepted', 'Out for Delivery', 'Delivered'] %}active{% endif %}">
+                                    <h6><i class="bi bi-check-circle"></i> Accepted by Farmer</h6>
+                                    <p class="text-muted mb-0 small">
+                                        {% if order[4] in ['Accepted', 'Out for Delivery', 'Delivered'] %}
+                                            Farmer has accepted your order
+                                        {% else %}
+                                            Waiting for farmer confirmation
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                <!-- Out for Delivery -->
+                                <div class="timeline-item {% if order[4] in ['Out for Delivery', 'Delivered'] %}active{% endif %}">
+                                    <h6><i class="bi bi-truck"></i> Out for Delivery</h6>
+                                    <p class="text-muted mb-0 small">
+                                        {% if order[4] in ['Out for Delivery', 'Delivered'] %}
+                                            Your order is on its way
+                                        {% else %}
+                                            Your order will be dispatched soon
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                <!-- Delivered -->
+                                <div class="timeline-item {% if order[4] == 'Delivered' %}active{% endif %}">
+                                    <h6><i class="bi bi-check-circle-fill"></i> Delivered</h6>
+                                    <p class="text-muted mb-0 small">
+                                        {% if order[4] == 'Delivered' %}
+                                            Order delivered successfully
+                                        {% else %}
+                                            Delivery pending
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle"></i> 
+                        <strong>Auto-refresh:</strong> This page will automatically refresh every 30 seconds to show the latest status.
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <a href="{{ url_for('order_history') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> Back to Order History
+                        </a>
+                        <button onclick="location.reload()" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh Status
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Need Help Card -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5><i class="bi bi-headset"></i> Need Help?</h5>
+                    <p class="mb-2">Contact the farmer directly for any queries:</p>
+                    <p class="mb-0">
+                        <i class="bi bi-phone"></i> <strong>{{ order[6] }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

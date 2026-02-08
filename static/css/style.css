@@ -1,0 +1,395 @@
+/* VizagRaithuBazaar Custom Styles */
+
+:root {
+    --primary-green: #2d5f3f;
+    --light-green: #4a7c59;
+    --accent-orange: #f27405;
+    --light-bg: #f8f9fa;
+    --border-color: #dee2e6;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+}
+
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: white !important;
+}
+
+.navbar-nav .nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    margin: 0 10px;
+    transition: all 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+/* Crop Card */
+.crop-card {
+    height: 100%;
+}
+
+.crop-card .badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+}
+
+/* Button Styles */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    border: none;
+    padding: 10px 25px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--light-green), var(--primary-green));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-warning {
+    background-color: var(--accent-orange);
+    border: none;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    padding: 12px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(45, 95, 63, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--primary-green);
+    margin-bottom: 8px;
+}
+
+/* Login Card */
+.login-card {
+    max-width: 450px;
+    margin: 50px auto;
+}
+
+/* OTP Input */
+.otp-input {
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 10px;
+    font-weight: bold;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white;
+    border-radius: 10px;
+}
+
+.stat-card h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Table Styles */
+.table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.table tbody tr {
+    transition: background-color 0.3s;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(45, 95, 63, 0.05);
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-placed {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-accepted {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.status-delivery {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.status-delivered {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Price Comparison */
+.price-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(45, 95, 63, 0.05);
+    border-radius: 8px;
+}
+
+/* Language Selector */
+.language-selector {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.lang-btn {
+    padding: 5px 15px;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.lang-btn:hover,
+.lang-btn.active {
+    background: white;
+    color: var(--primary-green);
+}
+
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    color: white;
+    padding: 30px 0;
+    margin-top: 50px;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .login-card {
+        margin: 20px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Scheme Cards */
+.scheme-card {
+    border-left: 4px solid var(--primary-green);
+    padding: 20px;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.scheme-card h4 {
+    color: var(--primary-green);
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.scheme-card .btn {
+    margin-top: 10px;
+}
+
+/* Order Tracking Timeline */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-left: 40px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -40px;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--border-color);
+}
+
+.timeline-item.active::before {
+    background: var(--primary-green);
+}
+
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 40px;
+    width: 2px;
+    height: calc(100% + 20px);
+    background: var(--border-color);
+}
+
+.timeline-item:last-child::after {
+    display: none;
+}

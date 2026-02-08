@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.consumer_login if t else 'Consumer Login' }} - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark text-center py-4">
+                    <i class="bi bi-cart-fill" style="font-size: 3rem;"></i>
+                    <h3 class="mt-2 mb-0">{{ t.consumer_login if t else 'Consumer Login' }}</h3>
+                    <p class="mb-0">{{ 'Enter your mobile number to continue' if lang == 'en' else 'కొనసాగించడానికి మీ మొబైల్ నంబర్‌ను నమోదు చేయండి' }}</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('consumer_login') }}">
+                        <div class="mb-4">
+                            <label for="phone_number" class="form-label fw-bold">
+                                <i class="bi bi-phone"></i> {{ t.mobile_number if t else 'Mobile Number' }}
+                            </label>
+                            <input type="tel" class="form-control form-control-lg" 
+                                   id="phone_number" name="phone_number" 
+                                   placeholder="{{ 'Enter 10-digit mobile number' if lang == 'en' else '10-అంకెల మొబైల్ నంబర్ నమోదు చేయండి' }}"
+                                   pattern="[6-9][0-9]{9}" maxlength="10" required>
+                            <div class="form-text">
+                                {{ 'Enter your 10-digit mobile number (starting with 6-9)' if lang == 'en' else 'మీ 10-అంకెల మొబైల్ నంబర్‌ను నమోదు చేయండి (6-9 తో ప్రారంభమవుతుంది)' }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg text-dark fw-bold">
+                                <i class="bi bi-send-fill"></i> {{ t.send_otp if t else 'Send OTP' }}
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p class="mb-0">{{ 'Are you a farmer?' if lang == 'en' else 'మీరు రైతుడా?' }}</p>
+                        <a href="{{ url_for('farmer_login') }}" class="btn btn-link">
+                            {{ 'Login as Farmer' if lang == 'en' else 'రైతుగా లాగిన్ అవ్వండి' }} →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

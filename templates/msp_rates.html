@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}MSP Rates - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="display-4 fw-bold text-success">
+            <i class="bi bi-graph-up-arrow"></i>
+            {{ 'Minimum Support Price (MSP) Rates' if lang == 'en' else 'కనీస మద్దతు ధర (MSP) రేట్లు' }}
+        </h1>
+        <p class="lead text-muted">
+            {{ 'Government declared MSP rates for 2024-25' if lang == 'en' else 'ప్రభుత్వం ప్రకటించిన 2024-25 MSP రేట్లు' }}
+        </p>
+    </div>
+
+    <!-- What is MSP Section -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm border-info">
+                <div class="card-body">
+                    <h4 class="card-title text-info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        {{ 'What is MSP?' if lang == 'en' else 'MSP అంటే ఏమిటి?' }}
+                    </h4>
+                    <p class="mb-3">
+                        {{ 'Minimum Support Price (MSP) is the rate at which the government purchases crops from farmers, regardless of market prices. It ensures farmers get a minimum guaranteed price for their produce.' if lang == 'en' else 'కనీస మద్దతు ధర (MSP) అనేది మార్కెట్ ధరలతో సంబంధం లేకుండా ప్రభుత్వం రైతుల నుండి పంటలను కొనుగోలు చేసే రేటు. ఇది రైతులకు వారి ఉత్పత్తికి కనీస హామీ ధరను నిర్ధారిస్తుంది.' }}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <strong>{{ 'Fair Returns' if lang == 'en' else 'న్యాయమైన రాబడి' }}</strong>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <strong>{{ 'Price Stability' if lang == 'en' else 'ధర స్థిరత్వం' }}</strong>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <strong>{{ 'Farmer Protection' if lang == 'en' else 'రైతు రక్షణ' }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MSP Rates Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-table"></i>
+                        {{ 'Current MSP Rates (2024-25)' if lang == 'en' else 'ప్రస్తుత MSP రేట్లు (2024-25)' }}
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-success">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th style="width: 20%">{{ 'Crop Name' if lang == 'en' else 'పంట పేరు' }}</th>
+                                    <th style="width: 15%">{{ 'Category' if lang == 'en' else 'వర్గం' }}</th>
+                                    <th style="width: 20%">{{ 'MSP (₹/quintal)' if lang == 'en' else 'MSP (₹/క్వింటల్)' }}</th>
+                                    <th style="width: 20%">{{ 'MSP (₹/kg)' if lang == 'en' else 'MSP (₹/కిలో)' }}</th>
+                                    <th style="width: 20%">{{ 'Calculate' if lang == 'en' else 'లెక్క' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><i class="bi bi-circle-fill text-warning"></i> <strong>Rice</strong> (బియ్యం)</td>
+                                    <td><span class="badge bg-success">Cereals</span></td>
+                                    <td><strong>₹2,040</strong></td>
+                                    <td><strong>₹20.40</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Rice', 2040)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><i class="bi bi-circle-fill text-warning"></i> <strong>Wheat</strong> (గోధుమ)</td>
+                                    <td><span class="badge bg-success">Cereals</span></td>
+                                    <td><strong>₹2,125</strong></td>
+                                    <td><strong>₹21.25</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Wheat', 2125)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><i class="bi bi-circle-fill text-warning"></i> <strong>Maize</strong> (మొక్కజొన్న)</td>
+                                    <td><span class="badge bg-success">Cereals</span></td>
+                                    <td><strong>₹1,870</strong></td>
+                                    <td><strong>₹18.70</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Maize', 1870)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><i class="bi bi-circle-fill text-primary"></i> <strong>Cotton</strong> (పత్తి)</td>
+                                    <td><span class="badge bg-secondary">Commercial</span></td>
+                                    <td><strong>₹6,620</strong></td>
+                                    <td><strong>₹66.20</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Cotton', 6620)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td><i class="bi bi-circle-fill text-info"></i> <strong>Groundnut</strong> (వేరుశనగ)</td>
+                                    <td><span class="badge bg-info">Oilseeds</span></td>
+                                    <td><strong>₹5,850</strong></td>
+                                    <td><strong>₹58.50</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Groundnut', 5850)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td><i class="bi bi-circle-fill text-info"></i> <strong>Soybean</strong> (సోయాబీన్)</td>
+                                    <td><span class="badge bg-info">Oilseeds</span></td>
+                                    <td><strong>₹4,600</strong></td>
+                                    <td><strong>₹46.00</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Soybean', 4600)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td><i class="bi bi-circle-fill text-success"></i> <strong>Sugarcane</strong> (చెరకు)</td>
+                                    <td><span class="badge bg-primary">Cash Crop</span></td>
+                                    <td><strong>₹31,500</strong></td>
+                                    <td><strong>₹315.00</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Sugarcane', 31500)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td><i class="bi bi-circle-fill text-danger"></i> <strong>Tomato</strong> (టమాటో)</td>
+                                    <td><span class="badge bg-dark">Vegetables</span></td>
+                                    <td><strong>₹3,000</strong></td>
+                                    <td><strong>₹30.00</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Tomato', 3000)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td><i class="bi bi-circle-fill text-danger"></i> <strong>Onion</strong> (ఉల్లిపాయ)</td>
+                                    <td><span class="badge bg-dark">Vegetables</span></td>
+                                    <td><strong>₹2,500</strong></td>
+                                    <td><strong>₹25.00</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Onion', 2500)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td><i class="bi bi-circle-fill text-danger"></i> <strong>Potato</strong> (బంగాళాదుంప)</td>
+                                    <td><span class="badge bg-dark">Vegetables</span></td>
+                                    <td><strong>₹2,800</strong></td>
+                                    <td><strong>₹28.00</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Potato', 2800)">Calculate</button></td>
+                                </tr>
+                                <tr>
+                                    <td>11</td>
+                                    <td><i class="bi bi-circle-fill text-warning"></i> <strong>Banana</strong> (అరటి)</td>
+                                    <td><span class="badge bg-warning text-dark">Fruits</span></td>
+                                    <td><strong>₹3,500</strong></td>
+                                    <td><strong>₹35.00</strong></td>
+                                    <td><button class="btn btn-sm btn-outline-primary" onclick="setCalculator('Banana', 3500)">Calculate</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MSP Calculator -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-primary" style="border-width: 3px;">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-calculator-fill"></i>
+                        {{ 'MSP Calculator' if lang == 'en' else 'MSP లెక్కించే యంత్రం' }}
+                    </h4>
+                    <small>{{ 'Calculate your crop value based on MSP' if lang == 'en' else 'MSP ఆధారంగా మీ పంట విలువను లెక్కించండి' }}</small>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-flower1"></i> {{ 'Select Crop' if lang == 'en' else 'పంట ఎంచుకోండి' }}
+                            </label>
+                            <select class="form-select form-select-lg" id="calc_crop" onchange="updateMSP()">
+                                <option value="">{{ 'Choose crop' if lang == 'en' else 'పంట ఎంచుకోండి' }}</option>
+                                <option value="Rice:2040">Rice (బియ్యం)</option>
+                                <option value="Wheat:2125">Wheat (గోధుమ)</option>
+                                <option value="Maize:1870">Maize (మొక్కజొన్న)</option>
+                                <option value="Cotton:6620">Cotton (పత్తి)</option>
+                                <option value="Groundnut:5850">Groundnut (వేరుశనగ)</option>
+                                <option value="Soybean:4600">Soybean (సోయాబీన్)</option>
+                                <option value="Sugarcane:31500">Sugarcane (చెరకు)</option>
+                                <option value="Tomato:3000">Tomato (టమాటో)</option>
+                                <option value="Onion:2500">Onion (ఉల్లిపాయ)</option>
+                                <option value="Potato:2800">Potato (బంగాళాదుంప)</option>
+                                <option value="Banana:3500">Banana (అరటి)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-box-seam"></i> {{ 'Quantity (kg)' if lang == 'en' else 'పరిమాణం (కిలో)' }}
+                            </label>
+                            <input type="number" 
+                                   class="form-control form-control-lg" 
+                                   id="calc_quantity" 
+                                   placeholder="{{ 'Enter quantity' if lang == 'en' else 'పరిమాణం నమోదు చేయండి' }}"
+                                   min="0.1"
+                                   step="0.1"
+                                   oninput="calculateMSP()">
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-currency-rupee"></i> {{ 'Your Price (₹/kg)' if lang == 'en' else 'మీ ధర (₹/కిలో)' }}
+                            </label>
+                            <input type="number" 
+                                   class="form-control form-control-lg" 
+                                   id="calc_price" 
+                                   placeholder="{{ 'Your price' if lang == 'en' else 'మీ ధర' }}"
+                                   min="0.01"
+                                   step="0.01"
+                                   oninput="calculateMSP()">
+                        </div>
+                    </div>
+                    
+                    <div id="calc_results" style="display: none;">
+                        <hr class="my-4">
+                        
+                        <!-- MSP Info -->
+                        <div class="alert alert-info mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="bi bi-info-circle-fill" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="col">
+                                    <h5 class="mb-2" id="calc_crop_name"></h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>{{ 'MSP per kg:' if lang == 'en' else 'MSP కిలోకు:' }}</strong>
+                                            <span id="calc_msp_kg" class="text-success fw-bold fs-5"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>{{ 'MSP for your quantity:' if lang == 'en' else 'మీ పరిమాణానికి MSP:' }}</strong>
+                                            <span id="calc_msp_total" class="text-success fw-bold fs-5"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Comparison Result -->
+                        <div id="calc_comparison"></div>
+                        
+                        <!-- Your Earnings -->
+                        <div class="alert alert-light border-primary" style="border-width: 2px;">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="bi bi-calculator-fill text-primary" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="col">
+                                    <h5>{{ 'Your Total Earnings' if lang == 'en' else 'మీ మొత్తం ఆదాయం' }}</h5>
+                                    <h2 class="text-primary fw-bold mb-0" id="calc_your_total">₹0</h2>
+                                    <small class="text-muted" id="calc_breakdown"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note -->
+    <div class="row mt-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="alert alert-light border">
+                <i class="bi bi-info-circle"></i>
+                <strong>{{ 'Note:' if lang == 'en' else 'గమనిక:' }}</strong>
+                {{ 'MSP rates are declared by the Government of India and may vary by season. The rates shown are for reference purposes. For official rates, please visit' if lang == 'en' else 'MSP రేట్లు భారత ప్రభుత్వం ప్రకటించినవి మరియు సీజన్ ప్రకారం మారవచ్చు. చూపిన రేట్లు సూచన ప్రయోజనాల కోసం. అధికారిక రేట్ల కోసం, దయచేసి సందర్శించండి' }}
+                <a href="https://agricoop.nic.in" target="_blank">agricoop.nic.in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const lang = '{{ lang }}' || 'en';
+
+function setCalculator(crop, msp) {
+    document.getElementById('calc_crop').value = crop + ':' + msp;
+    updateMSP();
+    document.getElementById('calc_quantity').focus();
+}
+
+function updateMSP() {
+    const select = document.getElementById('calc_crop');
+    const value = select.value;
+    if (value) {
+        calculateMSP();
+    }
+}
+
+function calculateMSP() {
+    const select = document.getElementById('calc_crop');
+    const quantity = parseFloat(document.getElementById('calc_quantity').value) || 0;
+    const userPrice = parseFloat(document.getElementById('calc_price').value) || 0;
+    
+    if (!select.value || quantity === 0) {
+        document.getElementById('calc_results').style.display = 'none';
+        return;
+    }
+    
+    const [cropName, mspQuintal] = select.value.split(':');
+    const mspKg = parseFloat(mspQuintal) / 100;
+    const mspTotal = (mspKg * quantity).toFixed(2);
+    const userTotal = (userPrice * quantity).toFixed(2);
+    const difference = (userTotal - mspTotal).toFixed(2);
+    
+    // Show results
+    document.getElementById('calc_results').style.display = 'block';
+    document.getElementById('calc_crop_name').textContent = cropName + (lang === 'te' ? ' MSP సమాచారం' : ' MSP Information');
+    document.getElementById('calc_msp_kg').textContent = '₹' + mspKg.toFixed(2) + '/kg';
+    document.getElementById('calc_msp_total').textContent = '₹' + mspTotal;
+    document.getElementById('calc_your_total').textContent = userPrice > 0 ? '₹' + userTotal : '₹0';
+    document.getElementById('calc_breakdown').textContent = userPrice > 0 
+        ? `₹${userPrice}/kg × ${quantity}kg = ₹${userTotal}`
+        : (lang === 'te' ? 'మీ ధరను నమోదు చేయండి' : 'Enter your price');
+    
+    // Comparison
+    if (userPrice > 0) {
+        let comparisonHTML = '';
+        const percentDiff = ((userPrice - mspKg) / mspKg * 100).toFixed(1);
+        
+        if (userPrice < mspKg * 0.95) {
+            comparisonHTML = `
+                <div class="alert alert-danger">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> ${lang === 'te' ? '⚠️ హెచ్చరిక: MSP కంటే తక్కువ!' : '⚠️ Warning: Below MSP!'}</h5>
+                    <p class="mb-2"><strong>${lang === 'te' ? 'మీరు ₹' + Math.abs(difference) + ' తక్కువ సంపాదిస్తున్నారు!' : 'You\'re earning ₹' + Math.abs(difference) + ' less!'}</strong></p>
+                    <small>${lang === 'te' ? 'సిఫార్సు: ₹' + mspKg.toFixed(2) + '/kg లేదా అంతకంటే ఎక్కువ' : 'Recommended: ₹' + mspKg.toFixed(2) + '/kg or above'}</small>
+                </div>
+            `;
+        } else if (userPrice > mspKg * 1.2) {
+            comparisonHTML = `
+                <div class="alert alert-warning">
+                    <h5><i class="bi bi-info-circle-fill"></i> ${lang === 'te' ? '⚠️ గమనిక: MSP కంటే ఎక్కువ' : '⚠️ Notice: Above MSP'}</h5>
+                    <p class="mb-0"><small>${lang === 'te' ? 'మీ ధర MSP కంటే ' + Math.abs(percentDiff) + '% ఎక్కువ' : 'Your price is ' + Math.abs(percentDiff) + '% above MSP'}</small></p>
+                </div>
+            `;
+        } else {
+            comparisonHTML = `
+                <div class="alert alert-success">
+                    <h5><i class="bi bi-check-circle-fill"></i> ${lang === 'te' ? '✓ మంచి ధర!' : '✓ Good Pricing!'}</h5>
+                    <p class="mb-2"><strong>${lang === 'te' ? 'మీరు ₹' + difference + ' అదనంగా సంపాదిస్తున్నారు!' : 'You\'re earning ₹' + difference + ' more!'}</strong></p>
+                    <small>${lang === 'te' ? 'మీ ధర MSP పరిధిలో ఉంది' : 'Your price is within MSP range'}</small>
+                </div>
+            `;
+        }
+        
+        document.getElementById('calc_comparison').innerHTML = comparisonHTML;
+    } else {
+        document.getElementById('calc_comparison').innerHTML = '';
+    }
+}
+</script>
+{% endblock %}
