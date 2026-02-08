@@ -1,371 +1,474 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t.add_crop if t else 'Add Crop' }} - VizagRaithuBazaar{% endblock %}
+{% block title %}Add Crop - VizagRaithuBazaar{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <!-- MSP KEY FEATURE BANNER -->
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                <h5 class="alert-heading">
+                    <i class="bi bi-graph-up-arrow"></i> 
+                    {% if lang == 'te' %}
+                        MSP మార్గదర్శకత్వంతో మీ పంటలను జాబితా చేయండి
+                    {% else %}
+                        List Your Crops with MSP Guidance
+                    {% endif %}
+                </h5>
+                <p class="mb-0">
+                    {% if lang == 'te' %}
+                        మేము మీ ధర మరియు పరిమాణాన్ని MSP తో పోల్చి, మంచి ధర పొందడానికి మీకు సహాయం చేస్తాము
+                    {% else %}
+                        We compare your price and quantity with MSP to help you get fair returns
+                    {% endif %}
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="card shadow-lg">
                 <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-plus-circle"></i> {{ t.add_crop if t else 'Add Crop' }}
-                    </h4>
-                    <p class="mb-0 small">{{ t.tagline if t else 'List your crop for consumers to purchase' }}</p>
+                    </h3>
+                    <p class="mb-0">{{ 'List your crop for consumers to purchase' if lang == 'en' else 'వినియోగదారులు కొనుగోలు చేయడానికి మీ పంటను జాబితా చేయండి' }}</p>
                 </div>
                 
                 <div class="card-body p-4">
-                    <!-- MSP Information Alert -->
-                    <div id="msp-info-alert" class="alert alert-info" style="display: none;">
-                        <div class="d-flex align-items-start">
-                            <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i>
-                            <div id="msp-info-text"></div>
+                    <!-- MSP INFO ALERT - PROMINENT -->
+                    <div id="msp-info-alert" class="alert alert-info border-info shadow-sm" style="display: none; border-width: 3px;">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <i class="bi bi-info-circle-fill" style="font-size: 3rem; color: #0dcaf0;"></i>
+                            </div>
+                            <div class="col">
+                                <h5 class="mb-2" id="msp-crop-name" style="font-weight: 700;"></h5>
+                                <div id="msp-info-text" class="mb-2"></div>
+                                <div id="msp-quantity-info" style="display: none;">
+                                    <hr class="my-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>{{ 'Your Quantity:' if lang == 'en' else 'మీ పరిమాణం:' }}</strong>
+                                            <span id="farmer-quantity">0</span> kg
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>{{ 'MSP Value:' if lang == 'en' else 'MSP విలువ:' }}</strong>
+                                            <span id="msp-total-value" class="text-success fw-bold">₹0</span>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted d-block mt-2">
+                                        {{ 'This is the minimum government guaranteed price for your entire quantity' if lang == 'en' else 'ఇది మీ మొత్తం పరిమాణానికి ప్రభుత్వం హామీ ఇచ్చిన కనీస ధర' }}
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <form method="POST" action="{{ url_for('add_crop') }}">
-                        <!-- Crop Name -->
                         <div class="mb-4">
-                            <label for="crop_name" class="form-label">
-                                <i class="bi bi-flower1"></i> {{ t.crop_name if t else 'Crop Name' }} *
+                            <label for="crop_name" class="form-label fw-bold fs-5">
+                                <i class="bi bi-basket"></i> {{ 'Crop Name' if lang == 'en' else 'పంట పేరు' }} *
                             </label>
                             <input type="text" 
                                    class="form-control form-control-lg" 
                                    id="crop_name" 
                                    name="crop_name" 
-                                   list="crop-suggestions" 
-                                   placeholder="e.g., Rice, Wheat, Tomato"
+                                   list="crop-suggestions"
+                                   placeholder="{{ 'e.g., Rice, Wheat, Tomato' if lang == 'en' else 'ఉదా., బియ్యం, గోధుమ, టమాటా' }}"
                                    required>
-                            
                             <datalist id="crop-suggestions">
-                                {% if msp_data %}
-                                    {% for crop in msp_data.keys() %}
-                                        <option value="{{ crop }}">
-                                    {% endfor %}
-                                {% elif msp_crops %}
-                                    {% for crop in msp_crops %}
-                                        <option value="{{ crop }}">
-                                    {% endfor %}
-                                {% else %}
-                                    <option value="Rice">
-                                    <option value="Wheat">
-                                    <option value="Maize">
-                                    <option value="Tomato">
-                                    <option value="Onion">
-                                    <option value="Potato">
-                                    <option value="Cotton">
-                                    <option value="Sugarcane">
-                                    <option value="Groundnut">
-                                    <option value="Soybean">
-                                {% endif %}
+                                {% for crop in msp_crops %}
+                                    <option value="{{ crop }}">
+                                {% endfor %}
                             </datalist>
-                            
-                            <small class="text-muted">
-                                {% if lang == 'te' %}
-                                    సూచనల నుండి ఎంచుకోండి లేదా అనుకూల పంట పేరు నమోదు చేయండి
-                                {% else %}
-                                    Select from suggestions or enter custom crop name
-                                {% endif %}
-                            </small>
+                            <div class="form-text">{{ 'Select from suggestions or enter custom crop name' if lang == 'en' else 'సూచనల నుండి ఎంచుకోండి లేదా అనుకూల పంట పేరు నమోదు చేయండి' }}</div>
                         </div>
 
-                        <!-- Price per kg -->
                         <div class="mb-4">
-                            <label for="price_per_kg" class="form-label">
-                                <i class="bi bi-currency-rupee"></i> {{ t.price_per_kg if t else 'Price per kg' }} *
+                            <label for="quantity" class="form-label fw-bold fs-5">
+                                <i class="bi bi-box-seam"></i> {{ 'Quantity (kg)' if lang == 'en' else 'పరిమాణం (కిలో)' }} *
+                            </label>
+                            <input type="number" 
+                                   class="form-control form-control-lg" 
+                                   id="quantity" 
+                                   name="quantity" 
+                                   step="0.1"
+                                   min="0.1"
+                                   placeholder="{{ 'Enter quantity in kilograms' if lang == 'en' else 'కిలోగ్రాములలో పరిమాణం నమోదు చేయండి' }}"
+                                   required>
+                            <div class="form-text">{{ 'Enter your available quantity first to see MSP value' if lang == 'en' else 'MSP విలువ చూడటానికి ముందుగా మీ అందుబాటులో ఉన్న పరిమాణాన్ని నమోదు చేయండి' }}</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="price_per_kg" class="form-label fw-bold fs-5">
+                                <i class="bi bi-currency-rupee"></i> {{ 'Price per kg' if lang == 'en' else 'కిలో ధర' }} *
                             </label>
                             <div class="input-group input-group-lg">
                                 <span class="input-group-text">₹</span>
                                 <input type="number" 
-                                       step="0.01" 
-                                       min="0.01"
                                        class="form-control" 
                                        id="price_per_kg" 
                                        name="price_per_kg" 
-                                       placeholder="0.00"
+                                       step="0.01"
+                                       min="0.01"
+                                       placeholder="{{ 'Enter price per kilogram' if lang == 'en' else 'కిలోగ్రాము ధర నమోదు చేయండి' }}"
                                        required>
                                 <span class="input-group-text">/kg</span>
                             </div>
-                            <small class="text-muted">
-                                {% if lang == 'te' %}
-                                    మీ పంట కోసం సరసమైన ధరను సెట్ చేయండి (అందుబాటులో ఉంటే MSP తో పోల్చండి)
-                                {% else %}
-                                    Set a fair price for your crop (compare with MSP if available)
-                                {% endif %}
-                            </small>
+                            <div class="form-text">{{ 'Set your price (MSP comparison will show below)' if lang == 'en' else 'మీ ధరను సెట్ చేయండి (MSP పోలిక క్రింద చూపబడుతుంది)' }}</div>
                             
-                            <!-- Real-time Price Warning -->
-                            <div id="price-warning" class="mt-2"></div>
+                            <!-- PRICE WARNING -->
+                            <div id="price-warning" class="mt-3"></div>
                         </div>
 
-                        <!-- Quantity -->
+                        <!-- TOTAL EARNINGS DISPLAY -->
+                        <div id="total-earnings-display" class="alert alert-light border-primary shadow-sm mb-4" style="display: none; border-width: 3px;">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="bi bi-calculator-fill text-primary" style="font-size: 3rem;"></i>
+                                </div>
+                                <div class="col">
+                                    <h5 class="mb-1">{{ 'Your Total Earnings' if lang == 'en' else 'మీ మొత్తం ఆదాయం' }}</h5>
+                                    <h2 class="mb-1 text-primary fw-bold" id="total-earnings-value">₹0</h2>
+                                    <small class="text-muted" id="earnings-breakdown"></small>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="mb-4">
-                            <label for="quantity" class="form-label">
-                                <i class="bi bi-box"></i> {{ t.quantity if t else 'Quantity (kg)' }} *
+                            <label for="location" class="form-label fw-bold fs-5">
+                                <i class="bi bi-geo-alt"></i> {{ 'Location in Vizag' if lang == 'en' else 'విశాఖపట్నంలో స్థానం' }} *
                             </label>
-                            <input type="number" 
-                                   step="0.01"
-                                   min="0.01" 
-                                   class="form-control form-control-lg" 
-                                   id="quantity" 
-                                   name="quantity" 
-                                   placeholder="e.g., 100"
-                                   required>
-                            <small class="text-muted">
-                                {% if lang == 'te' %}
-                                    మీకు ఎంత పరిమాణం అందుబాటులో ఉంది?
-                                {% else %}
-                                    How much quantity do you have available?
-                                {% endif %}
-                            </small>
+                            <select class="form-select form-select-lg" id="location" name="location" required>
+                                <option value="">{{ 'Select your area/locality' if lang == 'en' else 'మీ ప్రాంతం/స్థానిక ప్రాంతాన్ని ఎంచుకోండి' }}</option>
+                                <optgroup label="{{ 'Central Vizag' if lang == 'en' else 'సెంట్రల్ విశాఖపట్నం' }}">
+                                    <option value="Dwaraka Nagar">Dwaraka Nagar (ద్వారక నగర్)</option>
+                                    <option value="MVP Colony">MVP Colony (MVP కాలనీ)</option>
+                                    <option value="Siripuram">Siripuram (సిరిపురం)</option>
+                                    <option value="Pandurangapuram">Pandurangapuram (పాండురంగపురం)</option>
+                                    <option value="Seethammadhara">Seethammadhara (సీతమ్మదార)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'North Vizag' if lang == 'en' else 'ఉత్తర విశాఖపట్నం' }}">
+                                    <option value="Gajuwaka">Gajuwaka (గాజువాక)</option>
+                                    <option value="Pedagantyada">Pedagantyada (పెడగంత్యాడ)</option>
+                                    <option value="Gopalapatnam">Gopalapatnam (గోపాలపట్నం)</option>
+                                    <option value="Anakapalle">Anakapalle (అనకాపల్లి)</option>
+                                    <option value="Pendurthi">Pendurthi (పెందుర్తి)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'East Vizag' if lang == 'en' else 'తూర్పు విశాఖపట్నం' }}">
+                                    <option value="Madhurawada">Madhurawada (మధురవాడ)</option>
+                                    <option value="Rushikonda">Rushikonda (రుషికొండ)</option>
+                                    <option value="Visakha Beach Road">Visakha Beach Road (విశాఖ బీచ్ రోడ్)</option>
+                                    <option value="Lawsons Bay">Lawsons Bay (లాసన్స్ బే)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'South Vizag' if lang == 'en' else 'దక్షిణ విశాఖపట్నం' }}">
+                                    <option value="NAD Kotha Road">NAD Kotha Road (NAD కోత రోడ్)</option>
+                                    <option value="Maddilapalem">Maddilapalem (మద్దిలపాలెం)</option>
+                                    <option value="One Town">One Town (వన్ టౌన్)</option>
+                                    <option value="Jagadamba">Jagadamba (జగదంబ)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'West Vizag' if lang == 'en' else 'పశ్చిమ విశాఖపట్నం' }}">
+                                    <option value="Kommadi">Kommadi (కొమ్మడి)</option>
+                                    <option value="Madhurapudi">Madhurapudi (మధురపూడి)</option>
+                                    <option value="Akkayyapalem">Akkayyapalem (అక్కయ్యపాలెం)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'Suburban Areas' if lang == 'en' else 'శివార్ల ప్రాంతాలు' }}">
+                                    <option value="Bheemunipatnam">Bheemunipatnam (భీముని పట్నం)</option>
+                                    <option value="Sabbavaram">Sabbavaram (సబ్బావరం)</option>
+                                    <option value="Parawada">Parawada (పరవాడ)</option>
+                                    <option value="Anandapuram">Anandapuram (ఆనందపురం)</option>
+                                </optgroup>
+                            </select>
+                            <div class="form-text">{{ 'Select the area where your farm/produce is located' if lang == 'en' else 'మీ పొలం/ఉత్పత్తి ఉన్న ప్రాంతాన్ని ఎంచుకోండి' }}</div>
                         </div>
-
-                        <!-- Location -->
-                        <div class="mb-4">
-                            <label for="location" class="form-label">
-                                <i class="bi bi-geo-alt"></i> {{ t.location if t else 'Location' }} *
-                            </label>
-                            <input type="text" 
-                                   class="form-control form-control-lg" 
-                                   id="location" 
-                                   name="location" 
-                                   placeholder="e.g., Madhurawada, Vizag"
-                                   required>
-                            <small class="text-muted">
-                                {% if lang == 'te' %}
-                                    విజయవాడ ప్రాంతంలో మీ గ్రామం/ప్రాంతం పేరు నమోదు చేయండి
-                                {% else %}
-                                    Enter your village/area name in Vizag region
-                                {% endif %}
-                            </small>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> <strong>{{ 'Note:' if lang == 'en' else 'గమనిక:' }}</strong> 
+                            {{ 'Your crop will be visible to all consumers in the marketplace. Make sure all information is accurate.' if lang == 'en' else 'మీ పంట మార్కెట్‌ప్లేస్‌లో అందరు వినియోగదారులకు కనిపిస్తుంది. అన్ని సమాచారం ఖచ్చితమైనదని నిర్ధారించుకోండి.' }}
                         </div>
-
-                        <!-- Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('farmer_dashboard') }}" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> {{ t.cancel if t else 'Cancel' }}
-                            </a>
+                        
+                        <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success btn-lg">
-                                <i class="bi bi-check-circle"></i> {{ t.submit if t else 'List Crop' }}
+                                <i class="bi bi-check-circle"></i> {{ 'List Crop' if lang == 'en' else 'పంట జాబితా చేయండి' }}
                             </button>
+                            <a href="{{ url_for('farmer_dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> {{ 'Back to Dashboard' if lang == 'en' else 'డాష్‌బోర్డ్‌కు తిరిగి వెళ్ళండి' }}
+                            </a>
                         </div>
                     </form>
                 </div>
             </div>
-
-            <!-- MSP Information Card -->
-            <div class="card mt-4 border-info">
-                <div class="card-header bg-info text-white">
+            
+            <!-- MSP Reference Card -->
+            <div class="card mt-4 border-primary">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-info-circle"></i> 
-                        {% if lang == 'te' %}
-                            MSP గురించి తెలుసుకోండి
-                        {% else %}
-                            About MSP (Minimum Support Price)
-                        {% endif %}
+                        <i class="bi bi-graph-up"></i> {{ 'MSP Reference (2024-25)' if lang == 'en' else 'MSP సూచన (2024-25)' }}
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p>
-                        {% if lang == 'te' %}
-                            కనీస మద్దతు ధర (MSP) అనేది మార్కెట్ ధరలతో సంబంధం లేకుండా ప్రభుత్వం రైతుల నుండి పంటలను కొనుగోలు చేసే రేటు.
-                        {% else %}
-                            Minimum Support Price (MSP) is the rate at which the government purchases crops from farmers, regardless of market prices.
-                        {% endif %}
+                    <p class="small">{{ 'Minimum Support Prices for major crops:' if lang == 'en' else 'ప్రధాన పంటలకు కనీస మద్దతు ధరలు:' }}</p>
+                    <div class="row g-2">
+                        {% for crop in msp_crops[:6] %}
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                <span class="fw-bold">{{ crop }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p class="small text-muted mt-3 mb-0">
+                        <i class="bi bi-lightbulb"></i> 
+                        {{ 'Pricing at or above MSP ensures fair returns for your hard work.' if lang == 'en' else 'MSP దగ్గర లేదా అంతకంటే ఎక్కువ ధర పెట్టడం మీ కఠిన శ్రమకు న్యాయమైన రాబడిని నిర్ధారిస్తుంది.' }}
                     </p>
-                    <ul>
-                        <li>
-                            {% if lang == 'te' %}
-                                MSP కంటే తక్కువ ధర వద్ద విక్రయించవద్దు
-                            {% else %}
-                                Don't sell below MSP price
-                            {% endif %}
-                        </li>
-                        <li>
-                            {% if lang == 'te' %}
-                                MSP మీ కఠిన శ్రమకు న్యాయమైన రాబడిని నిర్ధారిస్తుంది
-                            {% else %}
-                                MSP ensures fair returns for your hard work
-                            {% endif %}
-                        </li>
-                        <li>
-                            {% if lang == 'te' %}
-                                వినియోగదారులు కూడా MSP ని చూసి న్యాయమైన ధర చెల్లిస్తున్నారో లేదో తెలుసుకోగలరు
-                            {% else %}
-                                Consumers can also see MSP to know they're paying fair prices
-                            {% endif %}
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Real-time MSP Warning JavaScript -->
+<!-- ENHANCED MSP System with Quantity-Based Calculations -->
 <script>
-// MSP data from backend
-const mspData = {{ msp_data|tojson|safe if msp_data else '{}' }};
+const mspData = {
+    'Rice': 2040, 'Wheat': 2125, 'Maize': 1870, 'Tomato': 3000,
+    'Onion': 2500, 'Potato': 2800, 'Cotton': 6620, 'Sugarcane': 31500,
+    'Groundnut': 5850, 'Soybean': 4600, 'Banana': 3500
+};
 
-// If msp_data is empty, use default values
-if (Object.keys(mspData).length === 0) {
-    Object.assign(mspData, {
-        'Rice': 2040,
-        'Wheat': 2125,
-        'Maize': 1870,
-        'Tomato': 3000,
-        'Onion': 2500,
-        'Potato': 2800,
-        'Cotton': 6620,
-        'Sugarcane': 31500,
-        'Groundnut': 5850,
-        'Soybean': 4600,
-        'Banana': 3500
-    });
-}
+const lang = '{{ lang }}' || 'en';
 
-console.log('MSP Data loaded:', mspData);
+console.log('🚀 Enhanced Quantity-Based MSP System Loading...');
 
-// Show MSP info when crop is selected
-document.getElementById('crop_name').addEventListener('input', function() {
-    const cropName = this.value.trim();
+window.addEventListener('load', function() {
+    const cropInput = document.getElementById('crop_name');
+    const priceInput = document.getElementById('price_per_kg');
+    const quantityInput = document.getElementById('quantity');
     const mspAlert = document.getElementById('msp-info-alert');
     const mspText = document.getElementById('msp-info-text');
-    
-    if (mspData[cropName]) {
-        const mspQuintal = mspData[cropName];
-        const mspKg = (mspQuintal / 100).toFixed(2);
-        
-        mspText.innerHTML = `
-            <div>
-                <strong>${cropName}</strong> MSP Information:<br>
-                <span class="badge bg-success">₹${mspQuintal}/quintal</span>
-                <span class="badge bg-primary">₹${mspKg}/kg</span><br>
-                <small class="text-muted">Set your price at or above MSP for fair returns</small>
-            </div>
-        `;
-        mspAlert.style.display = 'block';
-        mspAlert.className = 'alert alert-info';
-        
-        // Trigger price check
-        const priceInput = document.getElementById('price_per_kg');
-        if (priceInput.value) {
-            priceInput.dispatchEvent(new Event('input'));
-        }
-    } else {
-        mspAlert.style.display = 'none';
-    }
-});
-
-// Real-time price comparison
-document.getElementById('price_per_kg').addEventListener('input', function() {
-    const price = parseFloat(this.value);
-    const cropName = document.getElementById('crop_name').value.trim();
+    const mspCropName = document.getElementById('msp-crop-name');
+    const mspQuantityInfo = document.getElementById('msp-quantity-info');
     const warningDiv = document.getElementById('price-warning');
+    const totalEarningsDisplay = document.getElementById('total-earnings-display');
     
-    if (!price || !mspData[cropName]) {
-        warningDiv.innerHTML = '';
+    if (!cropInput || !priceInput || !quantityInput) {
+        console.error('❌ Required inputs not found!');
         return;
     }
     
-    const mspQuintal = mspData[cropName];
-    const mspKg = mspQuintal / 100;
-    const lang = '{{ lang }}' || 'en';
+    console.log('✅ All inputs found! System active.');
     
-    // Calculate difference
-    const percentDiff = ((price - mspKg) / mspKg * 100).toFixed(1);
+    // Update MSP display when crop or quantity changes
+    function updateMSPDisplay() {
+        const cropName = cropInput.value.trim();
+        const quantity = parseFloat(quantityInput.value) || 0;
+        
+        if (mspData[cropName]) {
+            const mspQuintal = mspData[cropName];
+            const mspKg = (mspQuintal / 100).toFixed(2);
+            const mspTotalValue = (mspKg * quantity).toFixed(2);
+            
+            mspCropName.textContent = cropName + (lang === 'te' ? ' MSP సమాచారం' : ' MSP Information');
+            mspText.innerHTML = `
+                <div class="d-flex gap-3 flex-wrap">
+                    <span class="badge bg-success" style="font-size: 1.1rem; padding: 8px 15px;">
+                        ₹${mspQuintal}/quintal
+                    </span>
+                    <span class="badge bg-primary" style="font-size: 1.1rem; padding: 8px 15px;">
+                        ₹${mspKg}/kg
+                    </span>
+                </div>
+            `;
+            
+            if (quantity > 0) {
+                document.getElementById('farmer-quantity').textContent = quantity;
+                document.getElementById('msp-total-value').textContent = `₹${mspTotalValue}`;
+                mspQuantityInfo.style.display = 'block';
+            } else {
+                mspQuantityInfo.style.display = 'none';
+            }
+            
+            mspAlert.style.display = 'block';
+            console.log('✅ MSP shown for:', cropName, 'Quantity:', quantity, 'kg');
+            
+            // Trigger price check if price exists
+            if (priceInput.value) {
+                updatePriceWarning();
+            }
+        } else {
+            mspAlert.style.display = 'none';
+        }
+    }
     
-    if (price < mspKg * 0.95) {
-        // Below MSP - RED WARNING
+    cropInput.addEventListener('input', updateMSPDisplay);
+    quantityInput.addEventListener('input', function() {
+        updateMSPDisplay();
+        updateTotalEarnings();
+    });
+    
+    // Calculate total earnings
+    function updateTotalEarnings() {
+        const price = parseFloat(priceInput.value);
+        const quantity = parseFloat(quantityInput.value);
+        
+        if (price && quantity) {
+            const total = (price * quantity).toFixed(2);
+            document.getElementById('total-earnings-value').textContent = `₹${total}`;
+            document.getElementById('earnings-breakdown').textContent = 
+                `₹${price}/kg × ${quantity}kg = ₹${total}`;
+            totalEarningsDisplay.style.display = 'block';
+        } else {
+            totalEarningsDisplay.style.display = 'none';
+        }
+    }
+    
+    priceInput.addEventListener('input', function() {
+        updatePriceWarning();
+        updateTotalEarnings();
+    });
+    
+    // Real-time price comparison
+    function updatePriceWarning() {
+        const price = parseFloat(priceInput.value);
+        const cropName = cropInput.value.trim();
+        const quantity = parseFloat(quantityInput.value) || 0;
+        
+        if (!price || !mspData[cropName]) {
+            warningDiv.innerHTML = '';
+            return;
+        }
+        
+        const mspQuintal = mspData[cropName];
+        const mspKg = mspQuintal / 100;
         const deficit = (mspKg - price).toFixed(2);
-        warningDiv.innerHTML = `
-            <div class="alert alert-danger">
-                <h6 class="alert-heading">
-                    <i class="bi bi-exclamation-triangle-fill"></i> 
-                    ${lang === 'te' ? 'హెచ్చరిక: MSP కంటే తక్కువ!' : '⚠️ Warning: Price Below MSP!'}
-                </h6>
-                <hr>
-                <div class="row">
-                    <div class="col-6">
-                        <strong>MSP:</strong> ₹${mspKg.toFixed(2)}/kg
-                    </div>
-                    <div class="col-6">
-                        <strong>${lang === 'te' ? 'మీ ధర:' : 'Your Price:'}</strong> ₹${price}/kg
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <small>
-                        ${lang === 'te' 
-                            ? `మీరు ₹${deficit}/kg తక్కువగా విక్రయిస్తున్నారు. సిఫార్సు: ₹${mspKg.toFixed(2)}/kg లేదా అంతకంటే ఎక్కువ`
-                            : `You're selling ₹${deficit}/kg below MSP. Recommended: ₹${mspKg.toFixed(2)}/kg or above`
-                        }
-                    </small>
-                </div>
-            </div>
-        `;
-    } else if (price > mspKg * 1.2) {
-        // Above MSP - YELLOW WARNING
-        warningDiv.innerHTML = `
-            <div class="alert alert-warning">
-                <h6 class="alert-heading">
-                    <i class="bi bi-info-circle-fill"></i> 
-                    ${lang === 'te' ? 'గమనిక: MSP కంటే ఎక్కువ' : '⚠️ Notice: Price Above MSP'}
-                </h6>
-                <hr>
-                <div class="row">
-                    <div class="col-6">
-                        <strong>MSP:</strong> ₹${mspKg.toFixed(2)}/kg
-                    </div>
-                    <div class="col-6">
-                        <strong>${lang === 'te' ? 'మీ ధర:' : 'Your Price:'}</strong> ₹${price}/kg
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <small>
-                        ${lang === 'te'
-                            ? `మీ ధర MSP కంటే ${Math.abs(percentDiff)}% ఎక్కువ. ఇది విక్రయించడం కష్టం కావచ్చు.`
-                            : `Your price is ${Math.abs(percentDiff)}% above MSP. This may be harder to sell.`
-                        }
-                    </small>
-                </div>
-            </div>
-        `;
-    } else {
-        // Good price - GREEN
-        warningDiv.innerHTML = `
-            <div class="alert alert-success">
-                <h6 class="alert-heading">
-                    <i class="bi bi-check-circle-fill"></i> 
-                    ${lang === 'te' ? '✓ మంచి ధర!' : '✓ Good Pricing!'}
-                </h6>
-                <hr>
-                <div class="row">
-                    <div class="col-6">
-                        <strong>MSP:</strong> ₹${mspKg.toFixed(2)}/kg
-                    </div>
-                    <div class="col-6">
-                        <strong>${lang === 'te' ? 'మీ ధర:' : 'Your Price:'}</strong> ₹${price}/kg
+        const percentDiff = ((price - mspKg) / mspKg * 100).toFixed(1);
+        
+        const farmerTotal = (price * quantity).toFixed(2);
+        const mspTotal = (mspKg * quantity).toFixed(2);
+        const difference = (farmerTotal - mspTotal).toFixed(2);
+        
+        if (price < mspKg * 0.95) {
+            // BELOW MSP - RED WARNING
+            warningDiv.innerHTML = `
+                <div class="alert alert-danger border-danger shadow-sm" style="border-width: 3px;">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi bi-exclamation-triangle-fill" style="font-size: 3.5rem; color: #dc3545;"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="alert-heading mb-2 fw-bold">
+                                ${lang === 'te' ? '⚠️ హెచ్చరిక: MSP కంటే తక్కువ!' : '⚠️ Warning: Price Below MSP!'}
+                            </h5>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <strong>${lang === 'te' ? 'MSP ధర:' : 'MSP Price:'}</strong> ₹${mspKg}/kg
+                                </div>
+                                <div class="col-6">
+                                    <strong>${lang === 'te' ? 'మీ ధర:' : 'Your Price:'}</strong> ₹${price}/kg
+                                </div>
+                            </div>
+                            ${quantity > 0 ? `
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <strong>${lang === 'te' ? 'MSP మొత్తం:' : 'MSP Total:'}</strong> ₹${mspTotal}
+                                </div>
+                                <div class="col-6">
+                                    <strong>${lang === 'te' ? 'మీ మొత్తం:' : 'Your Total:'}</strong> ₹${farmerTotal}
+                                </div>
+                            </div>
+                            <div class="alert alert-light mb-0">
+                                <strong>${lang === 'te' ? '⚠️ మీరు ₹' + Math.abs(difference) + ' తక్కువ సంపాదిస్తున్నారు!' : '⚠️ You\'re earning ₹' + Math.abs(difference) + ' less!'}</strong>
+                            </div>
+                            ` : ''}
+                            <hr class="my-2">
+                            <p class="mb-0">
+                                <strong>${lang === 'te' 
+                                    ? `మీరు ₹${deficit}/kg తక్కువగా విక్రయిస్తున్నారు`
+                                    : `You're selling ₹${deficit}/kg below MSP`
+                                }</strong><br>
+                                <small>${lang === 'te' 
+                                    ? `సిఫార్సు: ₹${mspKg}/kg లేదా అంతకంటే ఎక్కువ`
+                                    : `Recommended: ₹${mspKg}/kg or above`
+                                }</small>
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-2">
-                    <small>
-                        ${lang === 'te'
-                            ? 'మీ ధర MSP పరిధిలో ఉంది. మంచి ఎంపిక!'
-                            : 'Your price is within MSP range. Good choice!'
-                        }
-                    </small>
+            `;
+        } else if (price > mspKg * 1.2) {
+            // ABOVE MSP - YELLOW WARNING
+            warningDiv.innerHTML = `
+                <div class="alert alert-warning border-warning shadow-sm" style="border-width: 3px;">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi bi-info-circle-fill" style="font-size: 3.5rem; color: #ffc107;"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="alert-heading mb-2 fw-bold">
+                                ${lang === 'te' ? '⚠️ గమనిక: MSP కంటే ఎక్కువ' : '⚠️ Notice: Price Above MSP'}
+                            </h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>MSP:</strong> ₹${mspKg}/kg
+                                </div>
+                                <div class="col-6">
+                                    <strong>${lang === 'te' ? 'మీ ధర:' : 'Your Price:'}</strong> ₹${price}/kg
+                                </div>
+                            </div>
+                            <hr class="my-2">
+                            <p class="mb-0">
+                                <small>${lang === 'te'
+                                    ? `మీ ధర MSP కంటే ${Math.abs(percentDiff)}% ఎక్కువ. ఇది విక్రయించడం కష్టం కావచ్చు.`
+                                    : `Your price is ${Math.abs(percentDiff)}% above MSP. This may be harder to sell.`
+                                }</small>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            // GOOD PRICE - GREEN
+            warningDiv.innerHTML = `
+                <div class="alert alert-success border-success shadow-sm" style="border-width: 3px;">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="bi bi-check-circle-fill" style="font-size: 3.5rem; color: #198754;"></i>
+                        </div>
+                        <div class="col">
+                            <h5 class="alert-heading mb-2 fw-bold">
+                                ${lang === 'te' ? '✓ మంచి ధర!' : '✓ Good Pricing!'}
+                            </h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>MSP:</strong> ₹${mspKg}/kg
+                                </div>
+                                <div class="col-6">
+                                    <strong>${lang === 'te' ? 'మీ ధర:' : 'Your Price:'}</strong> ₹${price}/kg
+                                </div>
+                            </div>
+                            ${quantity > 0 ? `
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <div class="alert alert-light mb-0">
+                                        <strong>${lang === 'te' ? '✓ మీ మొత్తం ఆదాయం: ₹' + farmerTotal : '✓ Your Total Earnings: ₹' + farmerTotal}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            <hr class="my-2">
+                            <p class="mb-0">
+                                <small>${lang === 'te'
+                                    ? 'మీ ధర MSP పరిధిలో ఉంది. మంచి ఎంపిక!'
+                                    : 'Your price is within MSP range. Good choice!'
+                                }</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
-});
-
-// Trigger on page load if values exist
-window.addEventListener('load', function() {
-    const cropInput = document.getElementById('crop_name');
-    if (cropInput.value) {
-        cropInput.dispatchEvent(new Event('input'));
-    }
+    
+    console.log('✅ Quantity-Based MSP Warning System Active!');
 });
 </script>
 {% endblock %}

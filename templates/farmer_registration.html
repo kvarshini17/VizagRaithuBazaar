@@ -1,97 +1,167 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t.register }} - {{ t.farmer_name }}{% endblock %}
+{% block title %}{{ t.farmer_register if t else 'Farmer Registration' }} - VizagRaithuBazaar{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="card login-card">
-        <div class="card-header text-center">
-            <h3><i class="bi bi-person-plus"></i> {{ t.complete_profile }}</h3>
-            <p class="mb-0">{{ t.enter_details }}</p>
-        </div>
-        <div class="card-body p-4">
-            <div class="alert alert-info mb-4">
-                <i class="bi bi-info-circle"></i> 
-                {% if lang == 'te' %}
-                    మొదటి సారి లాగిన్! దయచేసి మీ వివరాలను నమోదు చేయండి.
-                {% else %}
-                    First time login! Please complete your profile to continue.
-                {% endif %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <i class="bi bi-person-plus-fill" style="font-size: 3rem;"></i>
+                    <h3 class="mt-2 mb-0">{{ 'Farmer Registration' if lang == 'en' else 'రైతు నమోదు' }}</h3>
+                    <p class="mb-0">{{ 'Create your account to start selling' if lang == 'en' else 'విక్రయించడం ప్రారంభించడానికి మీ ఖాతాను సృష్టించండి' }}</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('farmer_registration') }}">
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-bold">
+                                <i class="bi bi-person"></i> {{ 'Full Name' if lang == 'en' else 'పూర్తి పేరు' }} *
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="name" 
+                                   name="name" 
+                                   placeholder="{{ 'e.g., రవి కుమార్' if lang == 'en' else 'ఉదా., రవి కుమార్' }}"
+                                   required
+                                   autofocus>
+                            <div class="form-text">{{ 'Enter your name in Telugu or English' if lang == 'en' else 'తెలుగు లేదా ఆంగ్లంలో మీ పేరు నమోదు చేయండి' }}</div>
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label fw-bold">
+                                <i class="bi bi-phone"></i> {{ 'Mobile Number' if lang == 'en' else 'మొబైల్ నంబర్' }} *
+                            </label>
+                            <input type="tel" 
+                                   class="form-control form-control-lg" 
+                                   id="phone_number" 
+                                   name="phone_number" 
+                                   placeholder="{{ 'Enter 10-digit mobile number' if lang == 'en' else '10-అంకెల మొబైల్ నంబర్' }}"
+                                   pattern="[6-9][0-9]{9}"
+                                   maxlength="10"
+                                   required>
+                            <div class="form-text">{{ 'We will send OTP to verify this number' if lang == 'en' else 'ఈ నంబర్‌ను ధృవీకరించడానికి మేము OTP పంపుతాము' }}</div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="mb-3">
+                            <label for="location" class="form-label fw-bold">
+                                <i class="bi bi-geo-alt"></i> {{ 'Farm Location' if lang == 'en' else 'పొలం స్థానం' }} *
+                            </label>
+                            <select class="form-select form-select-lg" id="location" name="location" required>
+                                <option value="">{{ 'Select your area' if lang == 'en' else 'మీ ప్రాంతాన్ని ఎంచుకోండి' }}</option>
+                                <optgroup label="{{ 'Central Vizag' if lang == 'en' else 'సెంట్రల్ విశాఖపట్నం' }}">
+                                    <option value="Dwaraka Nagar">Dwaraka Nagar (ద్వారక నగర్)</option>
+                                    <option value="MVP Colony">MVP Colony (MVP కాలనీ)</option>
+                                    <option value="Siripuram">Siripuram (సిరిపురం)</option>
+                                    <option value="Pandurangapuram">Pandurangapuram (పాండురంగపురం)</option>
+                                    <option value="Seethammadhara">Seethammadhara (సీతమ్మదార)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'North Vizag' if lang == 'en' else 'ఉత్తర విశాఖపట్నం' }}">
+                                    <option value="Gajuwaka">Gajuwaka (గాజువాక)</option>
+                                    <option value="Pedagantyada">Pedagantyada (పెడగంత్యాడ)</option>
+                                    <option value="Gopalapatnam">Gopalapatnam (గోపాలపట్నం)</option>
+                                    <option value="Anakapalle">Anakapalle (అనకాపల్లి)</option>
+                                    <option value="Pendurthi">Pendurthi (పెందుర్తి)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'East Vizag' if lang == 'en' else 'తూర్పు విశాఖపట్నం' }}">
+                                    <option value="Madhurawada">Madhurawada (మధురవాడ)</option>
+                                    <option value="Rushikonda">Rushikonda (రుషికొండ)</option>
+                                    <option value="Visakha Beach Road">Visakha Beach Road (విశాఖ బీచ్ రోడ్)</option>
+                                    <option value="Lawsons Bay">Lawsons Bay (లాసన్స్ బే)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'South Vizag' if lang == 'en' else 'దక్షిణ విశాఖపట్నం' }}">
+                                    <option value="NAD Kotha Road">NAD Kotha Road (NAD కోత రోడ్)</option>
+                                    <option value="Maddilapalem">Maddilapalem (మద్దిలపాలెం)</option>
+                                    <option value="One Town">One Town (వన్ టౌన్)</option>
+                                    <option value="Jagadamba">Jagadamba (జగదంబ)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'West Vizag' if lang == 'en' else 'పశ్చిమ విశాఖపట్నం' }}">
+                                    <option value="Kommadi">Kommadi (కొమ్మడి)</option>
+                                    <option value="Madhurapudi">Madhurapudi (మధురపూడి)</option>
+                                    <option value="Akkayyapalem">Akkayyapalem (అక్కయ్యపాలెం)</option>
+                                </optgroup>
+                                <optgroup label="{{ 'Suburban Areas' if lang == 'en' else 'శివార్ల ప్రాంతాలు' }}">
+                                    <option value="Bheemunipatnam">Bheemunipatnam (భీముని పట్నం)</option>
+                                    <option value="Sabbavaram">Sabbavaram (సబ్బావరం)</option>
+                                    <option value="Parawada">Parawada (పరవాడ)</option>
+                                    <option value="Anandapuram">Anandapuram (ఆనందపురం)</option>
+                                </optgroup>
+                            </select>
+                            <div class="form-text">{{ 'Select the area where your farm is located' if lang == 'en' else 'మీ పొలం ఉన్న ప్రాంతాన్ని ఎంచుకోండి' }}</div>
+                        </div>
+
+                        <!-- Farm Size (Optional) -->
+                        <div class="mb-3">
+                            <label for="farm_size" class="form-label fw-bold">
+                                <i class="bi bi-grid-3x3"></i> {{ 'Farm Size (Optional)' if lang == 'en' else 'పొలం పరిమాణం (ఐచ్ఛికం)' }}
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="farm_size" 
+                                       name="farm_size" 
+                                       step="0.1"
+                                       min="0.1"
+                                       placeholder="{{ 'Enter farm size' if lang == 'en' else 'పొలం పరిమాణం నమోదు చేయండి' }}">
+                                <span class="input-group-text">{{ 'acres' if lang == 'en' else 'ఎకరాలు' }}</span>
+                            </div>
+                            <div class="form-text">{{ 'This helps us understand your farming scale' if lang == 'en' else 'ఇది మీ వ్యవసాయ స్థాయిని అర్థం చేసుకోవడానికి సహాయపడుతుంది' }}</div>
+                        </div>
+
+                        <!-- Main Crops -->
+                        <div class="mb-4">
+                            <label for="main_crops" class="form-label fw-bold">
+                                <i class="bi bi-flower1"></i> {{ 'Main Crops You Grow (Optional)' if lang == 'en' else 'మీరు పండించే ప్రధాన పంటలు (ఐచ్ఛికం)' }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="main_crops" 
+                                   name="main_crops" 
+                                   placeholder="{{ 'e.g., Rice, Wheat, Vegetables' if lang == 'en' else 'ఉదా., బియ్యం, గోధుమ, కూరగాయలు' }}">
+                            <div class="form-text">{{ 'Separate multiple crops with commas' if lang == 'en' else 'అనేక పంటలను కామాలతో వేరు చేయండి' }}</div>
+                        </div>
+
+                        <!-- Terms & Conditions -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                {{ 'I agree to the Terms & Conditions and Privacy Policy' if lang == 'en' else 'నేను నిబంధనలు & షరతులు మరియు గోప్యతా విధానాన్ని అంగీకరిస్తున్నాను' }} *
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-person-check"></i> {{ 'Create Account' if lang == 'en' else 'ఖాతాను సృష్టించండి' }}
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3 pt-3 border-top">
+                        <p class="mb-0">{{ 'Already have an account?' if lang == 'en' else 'ఇప్పటికే ఖాతా ఉందా?' }}</p>
+                        <a href="{{ url_for('farmer_login') }}" class="btn btn-link">
+                            {{ 'Login Here' if lang == 'en' else 'ఇక్కడ లాగిన్ అవ్వండి' }} →
+                        </a>
+                    </div>
+                </div>
             </div>
             
-            <form method="POST" action="{{ url_for('farmer_registration') }}">
-                <div class="mb-3">
-                    <label for="name" class="form-label">
-                        <i class="bi bi-person"></i> {{ t.farmer_name }} *
-                    </label>
-                    <input type="text" 
-                           class="form-control" 
-                           id="name" 
-                           name="name" 
-                           placeholder="{% if lang == 'te' %}మీ పూర్తి పేరు{% else %}Enter your full name{% endif %}"
-                           required
-                           autofocus>
+            <!-- Benefits Card -->
+            <div class="card mt-3 border-success">
+                <div class="card-body">
+                    <h6 class="fw-bold text-success">
+                        <i class="bi bi-check-circle-fill"></i> {{ 'Benefits of Joining' if lang == 'en' else 'చేరడం వల్ల లాభాలు' }}
+                    </h6>
+                    <ul class="small mb-0">
+                        <li>{{ 'Sell directly to consumers without middlemen' if lang == 'en' else 'మధ్యవర్తులు లేకుండా వినియోగదారులకు నేరుగా అమ్ముకోండి' }}</li>
+                        <li>{{ 'Get fair prices with MSP comparison' if lang == 'en' else 'MSP పోలికతో న్యాయమైన ధరలను పొందండి' }}</li>
+                        <li>{{ 'Free to use - No hidden charges' if lang == 'en' else 'ఉచితంగా ఉపయోగించండి - దాచిన ఛార్జీలు లేవు' }}</li>
+                        <li>{{ 'Reach more customers in Vizag region' if lang == 'en' else 'విజయవాడ ప్రాంతంలో మరిన్ని కస్టమర్‌లను చేరుకోండి' }}</li>
+                    </ul>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="village" class="form-label">
-                        <i class="bi bi-house"></i> {{ t.village }}
-                    </label>
-                    <input type="text" 
-                           class="form-control" 
-                           id="village" 
-                           name="village" 
-                           placeholder="{% if lang == 'te' %}మీ గ్రామం/మండలం{% else %}Your village/mandal{% endif %}">
-                    <div class="form-text">{{ t.optional }}</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="area" class="form-label">
-                        <i class="bi bi-geo-alt"></i> {{ t.area }}
-                    </label>
-                    <input type="text" 
-                           class="form-control" 
-                           id="area" 
-                           name="area" 
-                           placeholder="{% if lang == 'te' %}మీ ప్రాంతం{% else %}Your area/locality{% endif %}">
-                    <div class="form-text">{{ t.optional }}</div>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="district" class="form-label">
-                        <i class="bi bi-map"></i> {{ t.district }}
-                    </label>
-                    <select class="form-select" id="district" name="district">
-                        <option value="">{% if lang == 'te' %}ఎంచుకోండి{% else %}Select District{% endif %}</option>
-                        <option value="Visakhapatnam">Visakhapatnam</option>
-                        <option value="Anakapalli">Anakapalli</option>
-                        <option value="Vizianagaram">Vizianagaram</option>
-                        <option value="East Godavari">East Godavari</option>
-                    </select>
-                    <div class="form-text">{{ t.optional }}</div>
-                </div>
-                
-                <div class="alert alert-success">
-                    <i class="bi bi-check-circle"></i> 
-                    <strong>{% if lang == 'te' %}మీ ఫోన్ నంబర్:{% else %}Your Phone:{% endif %}</strong> {{ session.verified_phone }}
-                </div>
-                
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-check-circle"></i> {{ t.create_account }}
-                    </button>
-                </div>
-            </form>
-            
-            <div class="mt-4 text-center">
-                <p class="small text-muted">
-                    <i class="bi bi-shield-check"></i> 
-                    {% if lang == 'te' %}
-                        మీ సమాచారం సురక్షితంగా నిల్వ చేయబడుతుంది
-                    {% else %}
-                        Your information is stored securely
-                    {% endif %}
-                </p>
             </div>
         </div>
     </div>

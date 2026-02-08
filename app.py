@@ -157,6 +157,14 @@ def login_required(role=None):
 def home():
     return render_template('home.html')
 
+@app.route('/set-lang')
+def set_lang():
+    """Set language preference"""
+    lang = request.args.get('lang', 'en')
+    if lang in ['en', 'te']:
+        session['language'] = lang
+    return redirect(request.referrer or url_for('home')) 
+
 # Browse Marketplace Choice
 @app.route('/browse-choice')
 def browse_choice():
@@ -667,6 +675,21 @@ def schemes():
     ]
     
     return render_template('schemes.html', schemes=schemes_data)
+
+
+# MSP Rates - simple route to display MSP rates page
+@app.route('/msp_rates')
+def msp_rates():
+    # Fetch MSP rates from DB to display (optional: template can fetch via context)
+    conn = sqlite3.connect('vizag_bazaar.db')
+    c = conn.cursor()
+    c.execute('SELECT crop_name, msp_price FROM msp_prices ORDER BY crop_name')
+    msp_rows = c.fetchall()
+    conn.close()
+
+    # Convert to dict for template ease
+    msp_data = {row[0]: row[1] for row in msp_rows}
+    return render_template('msp_rates.html', msp_data=msp_data)
 
 # Change Language
 @app.route('/change-language/<lang>')
