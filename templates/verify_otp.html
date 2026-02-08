@@ -1,73 +1,146 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t.verify_otp if t else 'Verify OTP' }} - VizagRaithuBazaar{% endblock %}
+{% block title %}{{ t.verify_otp }} - VizagRaithuBazaar{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg">
-                <div class="card-header {% if session.temp_role == 'farmer' %}bg-success{% else %}bg-warning{% endif %} text-{% if session.temp_role == 'farmer' %}white{% else %}dark{% endif %} text-center py-4">
-                    <i class="bi bi-shield-check" style="font-size: 3rem;"></i>
-                    <h3 class="mt-2 mb-0">{{ t.verify_otp if t else 'Verify OTP' }}</h3>
-                    <p class="mb-0">{{ 'Enter the 6-digit OTP sent to your mobile' if lang == 'en' else 'మీ మొబైల్‌కు పంపిన 6-అంకెల OTP నమోదు చేయండి' }}</p>
-                </div>
-                
-                <div class="card-body p-4">
-                    <!-- REMOVED THE DUPLICATE BLUE OTP BOX - OTP IS SHOWN IN TOP CYAN ALERT -->
-                    
-                    <form method="POST" action="{{ url_for('verify_otp') }}">
-                        <div class="mb-4">
-                            <label for="otp" class="form-label fw-bold text-center d-block">
-                                <i class="bi bi-key"></i> {{ 'Enter OTP' if lang == 'en' else 'OTP నమోదు చేయండి' }}
-                            </label>
-                            <input type="text" 
-                                   class="form-control form-control-lg text-center fw-bold" 
-                                   id="otp" 
-                                   name="otp" 
-                                   placeholder="000000"
-                                   pattern="[0-9]{6}"
-                                   maxlength="6"
-                                   style="font-size: 2rem; letter-spacing: 10px;"
-                                   required
-                                   autofocus>
-                            <div class="form-text text-center">
-                                {{ 'Enter the 6-digit OTP displayed above' if lang == 'en' else 'పైన చూపబడిన 6-అంకెల OTP నమోదు చేయండి' }}
-                            </div>
-                        </div>
-                        
-                        <div class="d-grid">
-                            <button type="submit" class="btn {% if session.temp_role == 'farmer' %}btn-success{% else %}btn-warning text-dark fw-bold{% endif %} btn-lg">
-                                <i class="bi bi-check-circle"></i> {{ 'Verify & Login' if lang == 'en' else 'ధృవీకరించండి మరియు లాగిన్ అవ్వండి' }}
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div class="text-center mt-4 pt-3 border-top">
-                        <p class="mb-2">
-                            <i class="bi bi-info-circle"></i>
-                            <small>
-                                {{ 'In production, OTP will be sent via SMS. For this demo, OTP is displayed in the alert at the top of this page.' if lang == 'en' else 'ప్రొడక్షన్‌లో, OTP SMS ద్వారా పంపబడుతుంది. ఈ డెమో కోసం, OTP ఈ పేజీ పైభాగంలో అలర్ట్‌లో ప్రదర్శించబడుతుంది.' }}
-                            </small>
-                        </p>
-                    </div>
-                    
-                    <div class="text-center mt-3">
-                        <p class="mb-0">{{ "Didn't receive OTP?" if lang == 'en' else 'OTP అందలేదా?' }}</p>
-                        <a href="{{ url_for('farmer_login') if session.temp_role == 'farmer' else url_for('consumer_login') }}" class="btn btn-link">
-                            <i class="bi bi-arrow-clockwise"></i> {{ 'Resend OTP' if lang == 'en' else 'OTP మళ్లీ పంపండి' }}
-                        </a>
-                    </div>
-                </div>
+<div class="container">
+    <div class="card login-card">
+        <div class="card-header text-center">
+            <h3><i class="bi bi-shield-lock"></i> {{ t.verify_otp }}</h3>
+            <p class="mb-0">
+                {% if lang == 'te' %}
+                    మీ మొబైల్‌కు పంపిన 6-అంకెల OTPని నమోదు చేయండి
+                {% else %}
+                    Enter the 6-digit OTP sent to your mobile
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-phone-vibrate" style="font-size: 3rem; color: var(--primary-green);"></i>
+                <p class="mt-3">
+                    {% if lang == 'te' %}
+                        OTP పంపబడింది
+                    {% else %}
+                        OTP sent to
+                    {% endif %}
+                    <strong>{{ session.temp_phone }}</strong>
+                </p>
             </div>
             
-            <!-- Security Info -->
-            <div class="alert alert-light mt-3 text-center border">
-                <i class="bi bi-shield-lock-fill text-success" style="font-size: 1.5rem;"></i>
-                <div class="mt-2">
-                    <small>{{ 'Your information is secure and will never be shared with third parties' if lang == 'en' else 'మీ సమాచారం సురక్షితంగా ఉంది మరియు మూడవ పక్షాలతో ఎప్పుడూ పంచుకోబడదు' }}</small>
+            <form method="POST" action="{{ url_for('verify_otp') }}">
+                <div class="mb-4">
+                    <label for="otp" class="form-label text-center w-100">
+                        <i class="bi bi-key"></i> {{ t.enter_otp }}
+                    </label>
+                    <input type="text" 
+                           class="form-control form-control-lg otp-input" 
+                           id="otp" 
+                           name="otp" 
+                           placeholder="000000"
+                           pattern="[0-9]{6}"
+                           maxlength="6"
+                           required
+                           autofocus>
+                    <div class="form-text text-center">
+                        {% if lang == 'te' %}
+                            6-అంకెల OTPని నమోదు చేయండి
+                        {% else %}
+                            Enter the 6-digit OTP
+                        {% endif %}
+                    </div>
                 </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-check-circle"></i> 
+                        {% if lang == 'te' %}
+                            ధృవీకరించండి & లాగిన్
+                        {% else %}
+                            Verify & Login
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <p class="text-muted small">
+                    <i class="bi bi-info-circle"></i> 
+                    {% if lang == 'te' %}
+                        ఉత్పత్తిలో, OTP SMS ద్వారా పంపబడుతుంది. ఈ డెమో కోసం, OTP పైన ప్రదర్శించబడుతుంది.
+                    {% else %}
+                        In production, OTP will be sent via SMS. For this demo, OTP is displayed above.
+                    {% endif %}
+                </p>
             </div>
+            
+            <hr>
+            
+            <div class="text-center">
+                <p class="mb-2">
+                    {% if lang == 'te' %}
+                        OTP అందలేదా?
+                    {% else %}
+                        Didn't receive OTP?
+                    {% endif %}
+                </p>
+                {% if session.temp_role == 'farmer' %}
+                    <a href="{{ url_for('farmer_login') }}" class="btn btn-link">
+                        <i class="bi bi-arrow-clockwise"></i> 
+                        {% if lang == 'te' %}
+                            OTP మళ్లీ పంపండి
+                        {% else %}
+                            Resend OTP
+                        {% endif %}
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('consumer_login') }}" class="btn btn-link">
+                        <i class="bi bi-arrow-clockwise"></i> 
+                        {% if lang == 'te' %}
+                            OTP మళ్లీ పంపండి
+                        {% else %}
+                            Resend OTP
+                        {% endif %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Security Info -->
+    <div class="card mt-4" style="max-width: 450px; margin: 20px auto;">
+        <div class="card-body">
+            <h6 class="text-center mb-3">
+                <i class="bi bi-shield-check"></i> 
+                {% if lang == 'te' %}
+                    భద్రతా సమాచారం
+                {% else %}
+                    Security Information
+                {% endif %}
+            </h6>
+            <ul class="small mb-0">
+                <li>
+                    {% if lang == 'te' %}
+                        OTP 10 నిమిషాల వరకు చెల్లుతుంది
+                    {% else %}
+                        OTP is valid for 10 minutes
+                    {% endif %}
+                </li>
+                <li>
+                    {% if lang == 'te' %}
+                        మీ OTPని ఎవరితోనూ పంచుకోవద్దు
+                    {% else %}
+                        Do not share your OTP with anyone
+                    {% endif %}
+                </li>
+                <li>
+                    {% if lang == 'te' %}
+                        OTP-ఆధారిత లాగిన్ మీ ఖాతా భద్రతను నిర్ధారిస్తుంది
+                    {% else %}
+                        OTP-based login ensures your account security
+                    {% endif %}
+                </li>
+            </ul>
         </div>
     </div>
 </div>

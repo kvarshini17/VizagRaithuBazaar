@@ -1,167 +1,92 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t.consumer_register if t else 'Consumer Registration' }} - VizagRaithuBazaar{% endblock %}
+{% block title %}{{ t.register }} - {{ t.consumer_name }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-warning text-dark text-center py-4">
-                    <i class="bi bi-person-plus-fill" style="font-size: 3rem;"></i>
-                    <h3 class="mt-2 mb-0">{{ 'Consumer Registration' if lang == 'en' else 'వినియోగదారు నమోదు' }}</h3>
-                    <p class="mb-0">{{ 'Create your account to start shopping' if lang == 'en' else 'షాపింగ్ ప్రారంభించడానికి మీ ఖాతాను సృష్టించండి' }}</p>
-                </div>
-                
-                <div class="card-body p-4">
-                    <form method="POST" action="{{ url_for('consumer_registration') }}">
-                        <!-- Full Name -->
-                        <div class="mb-3">
-                            <label for="name" class="form-label fw-bold">
-                                <i class="bi bi-person"></i> {{ 'Full Name' if lang == 'en' else 'పూర్తి పేరు' }} *
-                            </label>
-                            <input type="text" 
-                                   class="form-control form-control-lg" 
-                                   id="name" 
-                                   name="name" 
-                                   placeholder="{{ 'e.g., Priya Sharma' if lang == 'en' else 'ఉదా., ప్రియా శర్మ' }}"
-                                   required
-                                   autofocus>
-                            <div class="form-text">{{ 'Enter your full name' if lang == 'en' else 'మీ పూర్తి పేరు నమోదు చేయండి' }}</div>
-                        </div>
-
-                        <!-- Mobile Number -->
-                        <div class="mb-3">
-                            <label for="phone_number" class="form-label fw-bold">
-                                <i class="bi bi-phone"></i> {{ 'Mobile Number' if lang == 'en' else 'మొబైల్ నంబర్' }} *
-                            </label>
-                            <input type="tel" 
-                                   class="form-control form-control-lg" 
-                                   id="phone_number" 
-                                   name="phone_number" 
-                                   placeholder="{{ 'Enter 10-digit mobile number' if lang == 'en' else '10-అంకెల మొబైల్ నంబర్' }}"
-                                   pattern="[6-9][0-9]{9}"
-                                   maxlength="10"
-                                   required>
-                            <div class="form-text">{{ 'We will send OTP to verify this number' if lang == 'en' else 'ఈ నంబర్‌ను ధృవీకరించడానికి మేము OTP పంపుతాము' }}</div>
-                        </div>
-
-                        <!-- Delivery Address -->
-                        <div class="mb-3">
-                            <label for="address" class="form-label fw-bold">
-                                <i class="bi bi-house"></i> {{ 'Delivery Address' if lang == 'en' else 'డెలివరీ చిరునామా' }} *
-                            </label>
-                            <textarea class="form-control form-control-lg" 
-                                      id="address" 
-                                      name="address" 
-                                      rows="2"
-                                      placeholder="{{ 'Flat/House No., Street, Landmark' if lang == 'en' else 'ఫ్లాట్/హౌస్ నం., వీధి, ల్యాండ్‌మార్క్' }}"
-                                      required></textarea>
-                            <div class="form-text">{{ 'Enter your complete delivery address' if lang == 'en' else 'మీ పూర్తి డెలివరీ చిరునామాను నమోదు చేయండి' }}</div>
-                        </div>
-
-                        <!-- Area/Locality -->
-                        <div class="mb-3">
-                            <label for="location" class="form-label fw-bold">
-                                <i class="bi bi-geo-alt"></i> {{ 'Area/Locality' if lang == 'en' else 'ప్రాంతం/స్థానిక ప్రాంతం' }} *
-                            </label>
-                            <select class="form-select form-select-lg" id="location" name="location" required>
-                                <option value="">{{ 'Select your area' if lang == 'en' else 'మీ ప్రాంతాన్ని ఎంచుకోండి' }}</option>
-                                <optgroup label="{{ 'Central Vizag' if lang == 'en' else 'సెంట్రల్ విశాఖపట్నం' }}">
-                                    <option value="Dwaraka Nagar">Dwaraka Nagar (ద్వారక నగర్)</option>
-                                    <option value="MVP Colony">MVP Colony (MVP కాలనీ)</option>
-                                    <option value="Siripuram">Siripuram (సిరిపురం)</option>
-                                    <option value="Pandurangapuram">Pandurangapuram (పాండురంగపురం)</option>
-                                    <option value="Seethammadhara">Seethammadhara (సీతమ్మదార)</option>
-                                </optgroup>
-                                <optgroup label="{{ 'North Vizag' if lang == 'en' else 'ఉత్తర విశాఖపట్నం' }}">
-                                    <option value="Gajuwaka">Gajuwaka (గాజువాక)</option>
-                                    <option value="Pedagantyada">Pedagantyada (పెడగంత్యాడ)</option>
-                                    <option value="Gopalapatnam">Gopalapatnam (గోపాలపట్నం)</option>
-                                    <option value="Anakapalle">Anakapalle (అనకాపల్లి)</option>
-                                    <option value="Pendurthi">Pendurthi (పెందుర్తి)</option>
-                                </optgroup>
-                                <optgroup label="{{ 'East Vizag' if lang == 'en' else 'తూర్పు విశాఖపట్నం' }}">
-                                    <option value="Madhurawada">Madhurawada (మధురవాడ)</option>
-                                    <option value="Rushikonda">Rushikonda (రుషికొండ)</option>
-                                    <option value="Visakha Beach Road">Visakha Beach Road (విశాఖ బీచ్ రోడ్)</option>
-                                    <option value="Lawsons Bay">Lawsons Bay (లాసన్స్ బే)</option>
-                                </optgroup>
-                                <optgroup label="{{ 'South Vizag' if lang == 'en' else 'దక్షిణ విశాఖపట్నం' }}">
-                                    <option value="NAD Kotha Road">NAD Kotha Road (NAD కోత రోడ్)</option>
-                                    <option value="Maddilapalem">Maddilapalem (మద్దిలపాలెం)</option>
-                                    <option value="One Town">One Town (వన్ టౌన్)</option>
-                                    <option value="Jagadamba">Jagadamba (జగదంబ)</option>
-                                </optgroup>
-                                <optgroup label="{{ 'West Vizag' if lang == 'en' else 'పశ్చిమ విశాఖపట్నం' }}">
-                                    <option value="Kommadi">Kommadi (కొమ్మడి)</option>
-                                    <option value="Madhurapudi">Madhurapudi (మధురపూడి)</option>
-                                    <option value="Akkayyapalem">Akkayyapalem (అక్కయ్యపాలెం)</option>
-                                </optgroup>
-                                <optgroup label="{{ 'Suburban Areas' if lang == 'en' else 'శివార్ల ప్రాంతాలు' }}">
-                                    <option value="Bheemunipatnam">Bheemunipatnam (భీముని పట్నం)</option>
-                                    <option value="Sabbavaram">Sabbavaram (సబ్బావరం)</option>
-                                    <option value="Parawada">Parawada (పరవాడ)</option>
-                                    <option value="Anandapuram">Anandapuram (ఆనందపురం)</option>
-                                </optgroup>
-                            </select>
-                            <div class="form-text">{{ 'This helps farmers deliver to your area' if lang == 'en' else 'ఇది రైతులు మీ ప్రాంతానికి డెలివరీ చేయడానికి సహాయపడుతుంది' }}</div>
-                        </div>
-
-                        <!-- PIN Code -->
-                        <div class="mb-4">
-                            <label for="pincode" class="form-label fw-bold">
-                                <i class="bi bi-mailbox"></i> {{ 'PIN Code' if lang == 'en' else 'పిన్ కోడ్' }} *
-                            </label>
-                            <input type="text" 
-                                   class="form-control form-control-lg" 
-                                   id="pincode" 
-                                   name="pincode" 
-                                   placeholder="{{ 'e.g., 530016' if lang == 'en' else 'ఉదా., 530016' }}"
-                                   pattern="[0-9]{6}"
-                                   maxlength="6"
-                                   required>
-                            <div class="form-text">{{ 'Enter 6-digit PIN code' if lang == 'en' else '6-అంకెల పిన్ కోడ్ నమోదు చేయండి' }}</div>
-                        </div>
-
-                        <!-- Terms & Conditions -->
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="terms" required>
-                            <label class="form-check-label" for="terms">
-                                {{ 'I agree to the Terms & Conditions and Privacy Policy' if lang == 'en' else 'నేను నిబంధనలు & షరతులు మరియు గోప్యతా విధానాన్ని అంగీకరిస్తున్నాను' }} *
-                            </label>
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-warning btn-lg text-dark fw-bold">
-                                <i class="bi bi-person-check"></i> {{ 'Create Account' if lang == 'en' else 'ఖాతాను సృష్టించండి' }}
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div class="text-center mt-3 pt-3 border-top">
-                        <p class="mb-0">{{ 'Already have an account?' if lang == 'en' else 'ఇప్పటికే ఖాతా ఉందా?' }}</p>
-                        <a href="{{ url_for('consumer_login') }}" class="btn btn-link">
-                            {{ 'Login Here' if lang == 'en' else 'ఇక్కడ లాగిన్ అవ్వండి' }} →
-                        </a>
-                    </div>
-                </div>
+<div class="container">
+    <div class="card login-card">
+        <div class="card-header text-center">
+            <h3><i class="bi bi-person-plus"></i> {{ t.complete_profile }}</h3>
+            <p class="mb-0">{{ t.enter_details }}</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle"></i> 
+                {% if lang == 'te' %}
+                    మొదటి సారి లాగిన్! దయచేసి మీ వివరాలను నమోదు చేయండి.
+                {% else %}
+                    First time login! Please complete your profile to continue.
+                {% endif %}
             </div>
             
-            <!-- Benefits Card -->
-            <div class="card mt-3 border-warning">
-                <div class="card-body">
-                    <h6 class="fw-bold text-warning">
-                        <i class="bi bi-check-circle-fill"></i> {{ 'Why Shop With Us' if lang == 'en' else 'మాతో ఎందుకు షాపింగ్ చేయాలి' }}
-                    </h6>
-                    <ul class="small mb-0">
-                        <li>{{ 'Fresh produce directly from farmers' if lang == 'en' else 'రైతుల నుండి నేరుగా తాజా ఉత్పత్తులు' }}</li>
-                        <li>{{ 'Fair prices with MSP transparency' if lang == 'en' else 'MSP పారదర్శకతతో న్యాయమైన ధరలు' }}</li>
-                        <li>{{ 'Support local farmers in Vizag' if lang == 'en' else 'విజయవాడలో స్థానిక రైతులకు మద్దతు ఇవ్వండి' }}</li>
-                        <li>{{ 'Convenient home delivery' if lang == 'en' else 'సౌకర్యవంతమైన ఇంటికి డెలివరీ' }}</li>
-                    </ul>
+            <form method="POST" action="{{ url_for('consumer_registration') }}">
+                <div class="mb-3">
+                    <label for="name" class="form-label">
+                        <i class="bi bi-person"></i> {{ t.consumer_name }} *
+                    </label>
+                    <input type="text" 
+                           class="form-control form-control-lg" 
+                           id="name" 
+                           name="name" 
+                           placeholder="{% if lang == 'te' %}మీ పూర్తి పేరు{% else %}Enter your full name{% endif %}"
+                           required
+                           autofocus>
                 </div>
+                
+                <div class="mb-4">
+                    <label for="area" class="form-label">
+                        <i class="bi bi-geo-alt"></i> {{ t.area }}
+                    </label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="area" 
+                           name="area" 
+                           placeholder="{% if lang == 'te' %}మీ ప్రాంతం, విజయవాడ{% else %}Your area, Vizag{% endif %}">
+                    <div class="form-text">{{ t.optional }}</div>
+                </div>
+                
+                <div class="alert alert-success">
+                    <i class="bi bi-phone"></i> 
+                    <strong>{% if lang == 'te' %}మీ ఫోన్ నంబర్:{% else %}Your Phone:{% endif %}</strong> {{ session.verified_phone }}
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="bi bi-check-circle"></i> {{ t.create_account }}
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <p class="small text-muted">
+                    <i class="bi bi-shield-check"></i> 
+                    {% if lang == 'te' %}
+                        మీ సమాచారం సురక్షితంగా నిల్వ చేయబడుతుంది
+                    {% else %}
+                        Your information is stored securely
+                    {% endif %}
+                </p>
             </div>
+        </div>
+    </div>
+    
+    <!-- Benefits Card -->
+    <div class="card mt-4" style="max-width: 450px; margin: 20px auto;">
+        <div class="card-body">
+            <h6 class="text-center mb-3">
+                <i class="bi bi-star"></i> 
+                {% if lang == 'te' %}
+                    మీరు పొందే ప్రయోజనాలు
+                {% else %}
+                    Benefits You Get
+                {% endif %}
+            </h6>
+            <ul class="small mb-0">
+                <li>{% if lang == 'te' %}తాజా పంటలు రైతుల నుండి నేరుగా{% else %}Fresh crops directly from farmers{% endif %}</li>
+                <li>{% if lang == 'te' %}MSP ధరలతో పోలిక{% else %}MSP price comparison{% endif %}</li>
+                <li>{% if lang == 'te' %}డెలివరీ ట్రాకింగ్{% else %}Delivery tracking{% endif %}</li>
+                <li>{% if lang == 'te' %}మధ్యవర్తులు లేరు{% else %}No middlemen{% endif %}</li>
+            </ul>
         </div>
     </div>
 </div>
