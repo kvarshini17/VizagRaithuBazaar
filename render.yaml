@@ -1,10 +1,11 @@
 services:
   - type: web
+    id: vizag-web
     name: vizagraithubazaar
     env: python
-    pythonVersion: 3.11
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
       - key: FLASK_SECRET_KEY
         generateValue: true
@@ -16,6 +17,8 @@ services:
           property: connectionString
 
 databases:
-  - name: vizag-bazaar-db
+  - id: vizag-db
+    name: vizag-bazaar-db
     databaseName: vizag_bazaar
     user: vizag_user
+    plan: free
