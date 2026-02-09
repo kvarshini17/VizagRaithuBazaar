@@ -3,9 +3,21 @@ import sqlite3
 import random
 from datetime import datetime
 from functools import wraps
+import os
 
 app = Flask(__name__)
-app.secret_key = 'vizag_raithu_bazaar_secret_key_2024'
+
+# Database configuration
+if os.environ.get('DATABASE_URL'):
+    # Production: Use PostgreSQL
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+else:
+    # Development: Use SQLite
+    DATABASE_URL = 'sqlite:///vizag_bazaar.db'
+
+# Flask configuration
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-key')
+app.secret_key = app.config['SECRET_KEY']
 
 # Database initialization
 def init_db():
@@ -984,4 +996,6 @@ def inject_language():
     return dict(lang=lang, t=translations[lang])
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug, host='0.0.0.0', port=port)
