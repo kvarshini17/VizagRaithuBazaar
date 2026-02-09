@@ -1,6 +1,5 @@
 services:
   - type: web
-    id: vizag-web
     name: vizagraithubazaar
     env: python
     plan: free
@@ -17,8 +16,6 @@ services:
           property: connectionString
 
 databases:
-  - id: vizag-db
-    name: vizag-bazaar-db
+  - name: vizag-bazaar-db
     databaseName: vizag_bazaar
     user: vizag_user
-    plan: free
