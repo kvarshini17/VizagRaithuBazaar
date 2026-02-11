@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - VizagRaithuBazaar{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-success">404</h1>
+                <h2 class="mb-4">
+                    {% if lang == 'te' %}
+                        పేజీ కనుగొనబడలేదు
+                    {% else %}
+                        Page Not Found
+                    {% endif %}
+                </h2>
+                <p class="lead mb-4">
+                    {% if lang == 'te' %}
+                        క్షమించండి, మీరు వెతుకుతున్న పేజీ ఉనికిలో లేదు లేదా తరలించబడింది.
+                    {% else %}
+                        Sorry, the page you're looking for doesn't exist or has been moved.
+                    {% endif %}
+                </p>
+                
+                <div class="my-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-exclamation-triangle text-warning" viewBox="0 0 16 16">
+                        <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                        <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+                    </svg>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{{ url_for('home') }}" class="btn btn-success btn-lg me-2">
+                        <i class="bi bi-house-door"></i>
+                        {% if lang == 'te' %}
+                            హోమ్‌కు వెళ్లండి
+                        {% else %}
+                            Go to Home
+                        {% endif %}
+                    </a>
+                    
+                    {% if session.user_id %}
+                        {% if session.role == 'farmer' %}
+                            <a href="{{ url_for('farmer_dashboard') }}" class="btn btn-outline-success btn-lg">
+                                <i class="bi bi-speedometer2"></i>
+                                {% if lang == 'te' %}
+                                    డాష్‌బోర్డ్
+                                {% else %}
+                                    Dashboard
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('marketplace') }}" class="btn btn-outline-success btn-lg">
+                                <i class="bi bi-shop"></i>
+                                {% if lang == 'te' %}
+                                    మార్కెట్‌ప్లేస్
+                                {% else %}
+                                    Marketplace
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="mt-5">
+                    <p class="text-muted">
+                        {% if lang == 'te' %}
+                            సహాయం కావాలా? <a href="{{ url_for('home') }}">మమ్మల్ని సంప్రదించండి</a>
+                        {% else %}
+                            Need help? <a href="{{ url_for('home') }}">Contact us</a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-page {
+        padding: 50px 0;
+    }
+    .error-page h1 {
+        font-size: 8rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}

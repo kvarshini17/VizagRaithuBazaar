@@ -5,7 +5,6 @@ Handles both SQLite (development) and PostgreSQL (production)
 
 import os
 import sqlite3
-import psycopg2
 from urllib.parse import urlparse
 
 def get_database_connection():
@@ -23,6 +22,9 @@ def get_database_connection():
         
         # Parse database URL
         result = urlparse(database_url)
+        
+        # Import psycopg2 only when needed
+        import psycopg2
         
         # Connect to PostgreSQL
         conn = psycopg2.connect(
