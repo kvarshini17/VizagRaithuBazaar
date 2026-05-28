@@ -111,7 +111,7 @@ class CursorWrapper:
         else:
             self.cursor.execute(converted_sql)
             
-        if self.db_type == 'postgresql' and 'RETURNING id' in converted_sql.upper():
+        if self.db_type == 'postgresql' and 'RETURNING ID' in converted_sql.upper():
             try:
                 row = self.cursor.fetchone()
                 if row:
