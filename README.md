@@ -3,7 +3,7 @@
 **Direct Farmer-to-Consumer Platform for Visakhapatnam Region**
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-3.0.0-green)](https://flask.palletsprojects.com/)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-green)](https://flask.palletsprojects.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 A bilingual (English/Telugu) web platform connecting farmers directly with consumers in the Visakhapatnam region, featuring MSP-based pricing transparency, OTP authentication, and real-time marketplace.
@@ -56,6 +56,7 @@ Browse fresh produce from local farmers.
 ```bash
 Python 3.9 or higher
 pip (Python package manager)
+PostgreSQL Database URL (Neon)
 ```
 
 ### Installation
@@ -76,27 +77,17 @@ pip install -r requirements.txt
 # Create .env file
 copy .env.example .env
 
-# Edit .env and add your configuration
+# Edit .env and add your configuration, most importantly your PostgreSQL DATABASE_URL
 ```
 
-4. **Initialize database**
-```bash
-python init_db_UPDATE.py
-```
-
-5. **Add demo data** (optional)
-```bash
-python init_realistic_data.py
-```
-
-6. **Run the application**
+4. **Run the application**
 ```bash
 python app.py
 ```
 
-7. **Open in browser**
+5. **Initialize Database**
 ```
-http://127.0.0.1:5000
+Navigate your browser to http://127.0.0.1:5000/init-db to automatically create the PostgreSQL tables and default crops.
 ```
 
 ---
@@ -134,9 +125,10 @@ Location: MVP Colony
 ```
 VizagRaithuBazaar/
 ├── app.py                          # Main Flask application
+├── database_config.py              # PostgreSQL database abstraction layer
 ├── requirements.txt                # Python dependencies
+├── vercel.json                     # Vercel deployment configuration
 ├── .env.example                    # Environment variables template
-├── vizag_bazaar.db                 # SQLite database
 ├── templates/                      # HTML templates
 │   ├── base.html                   # Base template with navigation
 │   ├── home.html                   # Landing page
@@ -151,24 +143,20 @@ VizagRaithuBazaar/
 │   ├── schemes.html                # Government schemes
 │   ├── farmer_registration.html    # Farmer signup
 │   └── consumer_registration.html  # Consumer signup
-├── static/                         # Static files
-│   ├── css/                        # Stylesheets
-│   └── images/                     # Images and icons
-├── init_db_UPDATE.py               # Database initialization
-├── init_realistic_data.py          # Demo data seeding
-└── add_default_crops.py            # Default crop MSP data
+└── static/                         # Static files
+    ├── css/                        # Stylesheets
+    └── images/                     # Images and icons
 ```
 
 ---
 
 ## 💡 Key Technologies
 
-- **Backend:** Flask 3.0.0 (Python)
-- **Database:** SQLite
+- **Backend:** Flask 2.3.3 (Python)
+- **Database:** PostgreSQL (Neon) via psycopg2
 - **Frontend:** Bootstrap 5.3.0, Bootstrap Icons
 - **Authentication:** OTP-based (mobile number)
-- **Languages:** Python, HTML, CSS, JavaScript
-- **Deployment Ready:** Render, Railway, PythonAnywhere compatible
+- **Deployment Ready:** Vercel (Serverless Functions)
 
 ---
 
@@ -207,7 +195,7 @@ The platform includes MSP (Minimum Support Price) data for:
 - ✅ Session management with expiry
 - ✅ Environment-based configuration
 - ✅ Input validation
-- ✅ SQL injection protection
+- ✅ SQL injection protection via parameterized queries
 - ✅ XSS prevention
 
 ---
@@ -270,7 +258,7 @@ For issues, questions, or suggestions:
 
 ## 📈 Version
 
-**Current Version:** 4.0
+**Current Version:** 5.0
 
 See [CHANGES.md](CHANGES.md) for version history and updates.
 
