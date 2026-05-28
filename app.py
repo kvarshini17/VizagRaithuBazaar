@@ -645,10 +645,16 @@ def order_history():
                  ORDER BY o.created_at DESC''',
               (session['user_id'],))
     orders = c.fetchall()
-    
     conn.close()
     
-    return render_template('order_history.html', orders=orders)
+    status_counts = {
+        'total': len(orders),
+        'pending': sum(1 for o in orders if o[4] == 'Order Placed'),
+        'transit': sum(1 for o in orders if o[4] == 'Out for Delivery'),
+        'delivered': sum(1 for o in orders if o[4] == 'Delivered')
+    }
+    
+    return render_template('order_history.html', orders=orders, status_counts=status_counts)
 
 # Track Order
 @app.route('/order/track/<int:order_id>')

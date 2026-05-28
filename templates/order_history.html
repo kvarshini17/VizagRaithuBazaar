@@ -75,7 +75,7 @@
                                         </span>
                                     {% endif %}
                                 </td>
-                                <td>{{ order[5][:10] }}</td>
+                                <td>{{ (order[5]|string)[:10] }}</td>
                                 <td>
                                     <a href="{{ url_for('track_order', order_id=order[0]) }}" 
                                        class="btn btn-sm btn-outline-primary">
@@ -95,7 +95,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h3 class="text-primary">{{ orders|length }}</h3>
+                        <h3 class="text-primary">{{ status_counts.total }}</h3>
                         <p class="mb-0 small">Total Orders</p>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h3 class="text-warning">{{ orders|selectattr('4', 'equalto', 'Order Placed')|list|length }}</h3>
+                        <h3 class="text-warning">{{ status_counts.pending }}</h3>
                         <p class="mb-0 small">Pending</p>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h3 class="text-info">{{ orders|selectattr('4', 'equalto', 'Out for Delivery')|list|length }}</h3>
+                        <h3 class="text-info">{{ status_counts.transit }}</h3>
                         <p class="mb-0 small">In Transit</p>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h3 class="text-success">{{ orders|selectattr('4', 'equalto', 'Delivered')|list|length }}</h3>
+                        <h3 class="text-success">{{ status_counts.delivered }}</h3>
                         <p class="mb-0 small">Delivered</p>
                     </div>
                 </div>

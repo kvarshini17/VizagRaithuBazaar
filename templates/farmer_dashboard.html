@@ -121,7 +121,7 @@
                                         <span class="status-badge status-delivered">{{ order[4] }}</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ order[5][:10] }}</td>
+                                <td>{{ (order[5]|string)[:10] }}</td>
                                 <td>
                                     {% if order[4] != 'Delivered' %}
                                     <form method="POST" action="{{ url_for('update_order_status', order_id=order[0]) }}" style="display: inline;">
