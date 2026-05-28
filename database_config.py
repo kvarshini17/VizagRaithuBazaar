@@ -102,7 +102,9 @@ class CursorWrapper:
         
         # Handle RETURNING id for lastrowid simulation in postgres
         if self.db_type == 'postgresql' and sql.strip().upper().startswith('INSERT') and 'RETURNING id' not in sql.upper():
-            converted_sql = converted_sql.rstrip(' ;') + ' RETURNING id'
+            upper_sql = sql.upper()
+            if 'INTO USERS' in upper_sql or 'INTO CROPS' in upper_sql or 'INTO ORDERS' in upper_sql:
+                converted_sql = converted_sql.rstrip(' ;') + ' RETURNING id'
             
         if params:
             self.cursor.execute(converted_sql, params)
