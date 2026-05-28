@@ -90,6 +90,11 @@ class CursorWrapper:
                 sql = sql.replace('INSERT OR IGNORE INTO', 'INSERT INTO')
                 sql = sql + ' ON CONFLICT DO NOTHING'
                 
+            # Convert SQLite AUTOINCREMENT to PostgreSQL SERIAL
+            if 'AUTOINCREMENT' in sql.upper():
+                sql = sql.replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'SERIAL PRIMARY KEY')
+                sql = sql.replace('integer primary key autoincrement', 'SERIAL PRIMARY KEY')
+                
         return sql
         
     def execute(self, sql, params=None):

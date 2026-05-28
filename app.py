@@ -159,6 +159,14 @@ def init_db():
 # Initialize database on startup (DISABLED FOR VERCEL)
 # init_db()
 
+@app.route('/init-db')
+def initialize_database():
+    try:
+        init_db()
+        return "Database initialized successfully! You can now use the app."
+    except Exception as e:
+        return f"Error initializing database: {str(e)}"
+
 # Helper function for login required
 def login_required(role=None):
     def decorator(f):
