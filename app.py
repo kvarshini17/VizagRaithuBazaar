@@ -156,8 +156,8 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Initialize database on startup
-init_db()
+# Initialize database on startup (DISABLED FOR VERCEL)
+# init_db()
 
 # Helper function for login required
 def login_required(role=None):
