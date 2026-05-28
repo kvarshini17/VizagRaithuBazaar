@@ -8,12 +8,21 @@ import os
 app = Flask(__name__)
 
 # Database configuration
-if os.environ.get('DATABASE_URL'):
-    # Production: Use PostgreSQL
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-else:
-    # Development: Use SQLite
-    DATABASE_URL = 'sqlite:///vizag_bazaar.db'
+import os
+import sqlite3
+
+# ===== DATABASE CONFIGURATION =====
+# Get absolute path to database file
+basedir = os.path.abspath(os.path.dirname(__file__))
+DATABASE = os.path.join(basedir, 'vizag_bazaar.db')
+
+# Debug: Print database location
+print("=" * 60)
+print(f"DATABASE LOCATION: {DATABASE}")
+print(f"DATABASE EXISTS: {os.path.exists(DATABASE)}")
+if os.path.exists(DATABASE):
+    print(f"DATABASE SIZE: {os.path.getsize(DATABASE)} bytes")
+print("=" * 60)
 
 # Flask configuration
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-key')
@@ -21,7 +30,7 @@ app.secret_key = app.config['SECRET_KEY']
 
 # Database initialization
 def init_db():
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
     
     # Users table
