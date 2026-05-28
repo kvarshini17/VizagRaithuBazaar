@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
+from database_config import get_database_connection
 import random
 from datetime import datetime
 from functools import wraps
@@ -30,7 +31,7 @@ app.secret_key = app.config['SECRET_KEY']
 
 # Database initialization
 def init_db():
-    conn = sqlite3.connect(DATABASE)
+    conn = get_database_connection()
     c = conn.cursor()
     
     # Users table
@@ -209,7 +210,7 @@ def farmer_login():
         otp = str(random.randint(100000, 999999))
         
         # Store OTP in database
-        conn = sqlite3.connect('vizag_bazaar.db')
+        conn = get_database_connection()
         c = conn.cursor()
         c.execute('INSERT OR REPLACE INTO otp_verification VALUES (?, ?, ?)',
                   (phone, otp, datetime.now()))
@@ -241,7 +242,7 @@ def consumer_login():
         otp = str(random.randint(100000, 999999))
         
         # Store OTP in database
-        conn = sqlite3.connect('vizag_bazaar.db')
+        conn = get_database_connection()
         c = conn.cursor()
         c.execute('INSERT OR REPLACE INTO otp_verification VALUES (?, ?, ?)',
                   (phone, otp, datetime.now()))
@@ -272,7 +273,7 @@ def verify_otp():
         role = session.get('temp_role')
         
         # Verify OTP
-        conn = sqlite3.connect('vizag_bazaar.db')
+        conn = get_database_connection()
         c = conn.cursor()
         c.execute('SELECT otp FROM otp_verification WHERE phone_number = ?', (phone,))
         result = c.fetchone()
@@ -347,7 +348,7 @@ def farmer_registration():
         full_location = ', '.join(location_parts) if location_parts else area or 'Vizag'
         
         # Create user
-        conn = sqlite3.connect('vizag_bazaar.db')
+        conn = get_database_connection()
         c = conn.cursor()
         c.execute('INSERT INTO users (phone_number, role, name) VALUES (?, ?, ?)',
                   (phone, role, name))
@@ -387,7 +388,7 @@ def consumer_registration():
         role = session['verified_role']
         
         # Create user
-        conn = sqlite3.connect('vizag_bazaar.db')
+        conn = get_database_connection()
         c = conn.cursor()
         c.execute('INSERT INTO users (phone_number, role, name) VALUES (?, ?, ?)',
                   (phone, role, name))
@@ -412,7 +413,7 @@ def consumer_registration():
 @app.route('/farmer/dashboard')
 @login_required(role='farmer')
 def farmer_dashboard():
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     
     # Get farmer's crops
@@ -456,7 +457,7 @@ def add_crop():
             price_per_kg = float(price_per_kg)
             quantity = float(quantity)
             
-            conn = sqlite3.connect('vizag_bazaar.db')
+            conn = get_database_connection()
             c = conn.cursor()
             
             # Get MSP for this crop and compare
@@ -496,7 +497,7 @@ def add_crop():
             flash('Invalid price or quantity', 'danger')
     
     # Get MSP data for display
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     c.execute('SELECT crop_name, msp_price FROM msp_prices ORDER BY crop_name')
     msp_data = {row[0]: row[1] for row in c.fetchall()}
@@ -514,7 +515,7 @@ def update_order_status(order_id):
         flash('Invalid status', 'danger')
         return redirect(url_for('farmer_dashboard'))
     
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     c.execute('UPDATE orders SET status = ? WHERE id = ? AND farmer_id = ?',
               (new_status, order_id, session['user_id']))
@@ -528,7 +529,7 @@ def update_order_status(order_id):
 @app.route('/marketplace')
 @login_required(role='consumer')
 def marketplace():
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     
     # Get all available crops with farmer details and MSP
@@ -577,7 +578,7 @@ def marketplace():
 @app.route('/order/place/<int:crop_id>', methods=['GET', 'POST'])
 @login_required(role='consumer')
 def place_order(crop_id):
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     
     # Get crop details
@@ -624,7 +625,7 @@ def place_order(crop_id):
 @app.route('/orders/history')
 @login_required(role='consumer')
 def order_history():
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     
     c.execute('''SELECT o.id, c.crop_name, o.quantity, o.total_price, o.status, o.created_at,
@@ -645,7 +646,7 @@ def order_history():
 @app.route('/order/track/<int:order_id>')
 @login_required(role='consumer')
 def track_order(order_id):
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     
     c.execute('''SELECT o.id, c.crop_name, o.quantity, o.total_price, o.status, o.created_at,
@@ -702,7 +703,7 @@ def schemes():
 @app.route('/msp_rates')
 def msp_rates():
     # Fetch MSP rates from DB to display (optional: template can fetch via context)
-    conn = sqlite3.connect('vizag_bazaar.db')
+    conn = get_database_connection()
     c = conn.cursor()
     c.execute('SELECT crop_name, msp_price FROM msp_prices ORDER BY crop_name')
     msp_rows = c.fetchall()
