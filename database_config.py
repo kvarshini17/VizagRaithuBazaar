@@ -75,23 +75,23 @@ class CursorWrapper:
         self._lastrowid = None
         
     def _convert_sql(self, sql):
-        if self.db_type == \'postgresql\':
-            return sql.replace(\'?\', \'%s\')
+        if self.db_type == 'postgresql':
+            return sql.replace('?', '%s')
         return sql
         
     def execute(self, sql, params=None):
         converted_sql = self._convert_sql(sql)
         
         # Handle RETURNING id for lastrowid simulation in postgres
-        if self.db_type == \'postgresql\' and sql.strip().upper().startswith(\'INSERT\') and \'RETURNING id\' not in sql.upper():
-            converted_sql = converted_sql.rstrip(\' ;\') + \' RETURNING id\'
+        if self.db_type == 'postgresql' and sql.strip().upper().startswith('INSERT') and 'RETURNING id' not in sql.upper():
+            converted_sql = converted_sql.rstrip(' ;') + ' RETURNING id'
             
         if params:
             self.cursor.execute(converted_sql, params)
         else:
             self.cursor.execute(converted_sql)
             
-        if self.db_type == \'postgresql\' and \'RETURNING id\' in converted_sql.upper():
+        if self.db_type == 'postgresql' and 'RETURNING id' in converted_sql.upper():
             try:
                 row = self.cursor.fetchone()
                 if row:
@@ -102,9 +102,9 @@ class CursorWrapper:
         
     @property
     def lastrowid(self):
-        if self.db_type == \'postgresql\':
+        if self.db_type == 'postgresql':
             return self._lastrowid
-        return getattr(self.cursor, \'lastrowid\', None)
+        return getattr(self.cursor, 'lastrowid', None)
         
     def fetchone(self):
         return self.cursor.fetchone()
