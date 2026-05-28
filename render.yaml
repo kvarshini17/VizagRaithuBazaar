@@ -13,5 +13,6 @@ services:
 
 databases:
   - name: vizag-bazaar-db
+    plan: free
     databaseName: vizag_bazaar
     user: vizag_user
