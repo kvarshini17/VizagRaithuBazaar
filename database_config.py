@@ -76,7 +76,20 @@ class CursorWrapper:
         
     def _convert_sql(self, sql):
         if self.db_type == 'postgresql':
-            return sql.replace('?', '%s')
+            sql = sql.replace('?', '%s')
+            
+            # Convert SQLite INSERT OR REPLACE to PostgreSQL INSERT ... ON CONFLICT
+            if 'INSERT OR REPLACE INTO otp_verification' in sql.upper() or 'INSERT OR REPLACE INTO OTP_VERIFICATION' in sql.upper():
+                # We need to replace it case-insensitively, so just do a standard replace
+                sql = sql.replace('INSERT OR REPLACE INTO otp_verification', 'INSERT INTO otp_verification')
+                sql = sql.replace('INSERT OR REPLACE INTO OTP_VERIFICATION', 'INSERT INTO otp_verification')
+                sql = sql + ' ON CONFLICT (phone_number) DO UPDATE SET otp = EXCLUDED.otp, created_at = EXCLUDED.created_at'
+                
+            # Convert SQLite INSERT OR IGNORE
+            if 'INSERT OR IGNORE INTO' in sql.upper():
+                sql = sql.replace('INSERT OR IGNORE INTO', 'INSERT INTO')
+                sql = sql + ' ON CONFLICT DO NOTHING'
+                
         return sql
         
     def execute(self, sql, params=None):
