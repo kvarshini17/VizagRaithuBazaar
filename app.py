@@ -95,7 +95,7 @@ def init_db():
         c.execute('INSERT OR IGNORE INTO msp_prices VALUES (?, ?)', (crop, price))
     
     # Add realistic Vizag farmers if no farmers exist
-    c.execute('SELECT COUNT(*) FROM users WHERE role = "farmer"')
+    c.execute("SELECT COUNT(*) FROM users WHERE role = 'farmer'")
     if c.fetchone()[0] == 0:
         realistic_farmers = [
             {
