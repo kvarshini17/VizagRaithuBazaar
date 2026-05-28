@@ -2,7 +2,8 @@
 # Production dependencies
 
 # Core Framework
-Flask==3.0.0
+Flask==2.3.3
+Werkzeug==2.3.7
 
 # Document Generation
 python-docx==1.1.0
